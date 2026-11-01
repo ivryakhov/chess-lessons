@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:,">
+  <title>Проверка перед ходом</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main>
+  <p class="kicker">Шпаргалка</p>
+  <h1>Проверка перед ходом</h1>
+  <p class="key">Какие шахи и взятия будут у соперника после этого хода?</p>
+  <ol>
+    <li>Выбери ход, но пока не делай его.</li>
+    <li>Представь его на доске. Посмотри все шахи соперника, потом все взятия.</li>
+    <li>Проверь, что ты теряешь после каждого из них. Если ничего, ходи.</li>
+  </ol>
+  <p>С 3-го по 12-й ход: не быстрее 15 секунд на ход. Атакованная фигура ходит первой: прогнать её не значит защититься.</p>
+
+  <h2>Четыре ловушки из твоих партий</h2>
+  <div class="cards">
+    <section class="card">
+      <div id="b1"></div>
+      <h3>Прогнала ферзя ходом g6</h3>
+      <p>Ферзь берёт e5 с шахом и бьёт ладью h8. Было дважды.</p>
+    </section>
+    <section class="card">
+      <div id="b2"></div>
+      <h3>Пешка f ушла с места</h3>
+      <p>Открылась диагональ h4–e1: шах ферзём и потеря ладьи.</p>
+    </section>
+    <section class="card">
+      <div id="b3"></div>
+      <h3>Защитила одно, забыла другое</h3>
+      <p>Конь f3 держит e5, но слон f4 остаётся без защиты.</p>
+    </section>
+    <section class="card">
+      <div id="b4"></div>
+      <h3>Прогнала коня ходом a6</h3>
+      <p>Конь бьёт c7 с шахом и нападает на ладью a8.</p>
+    </section>
+  </div>
+
+  <p class="foot">
+    <a href="../lessons/0001-shahi-i-vzyatiya.html">Урок 1: шахи и взятия</a> · <a href="../index.html">Все уроки</a><br>
+    Источник: Dan Heisman, <a href="https://www.chess.com/article/view/passive-vs-basic-hope-chess">Passive vs Basic Hope Chess</a>.
+  </p>
+</main>
+
+<script src="../assets/board.js"></script>
+<script>
+  [
+    { id: 'b1', side: 'black', fen: 'rnbqk1nr/pppp1p1p/6p1/2b1p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 4', arrows: [{ from: 'h5', to: 'e5', kind: 'danger' }] },
+    { id: 'b2', side: 'white', fen: 'rnbqk2r/pppp1ppp/4p3/8/2PPn3/P1P2P2/4P1PP/R1BQKBNR b KQkq - 0 6', arrows: [{ from: 'd8', to: 'h4', kind: 'danger' }] },
+    { id: 'b3', side: 'white', fen: 'r1bqk2r/ppp2ppp/2n3n1/3pP3/5B2/P1P2N2/2P1PPPP/1R1QKB1R b Kkq - 4 8', arrows: [{ from: 'g6', to: 'f4', kind: 'danger' }] },
+    { id: 'b4', side: 'black', fen: 'rnb1k2r/1pp2pp1/p2p1q1p/1N2p3/2B1P3/5N2/PbP2PPP/1R1QK2R w Kkq - 0 10', arrows: [{ from: 'b5', to: 'c7', kind: 'danger' }] }
+  ].forEach(function (item) {
+    var board = new ChessBoard(document.getElementById(item.id), { orientation: item.side, fen: item.fen });
+    board.arrows(item.arrows);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# Публикуем только учебные страницы. Всё остальное остаётся локально.
+*
+!.gitignore
+!index.html
+!lessons/
+!lessons/**
+!reference/
+!reference/**
+!assets/
+!assets/**

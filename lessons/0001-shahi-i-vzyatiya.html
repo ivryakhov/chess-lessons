@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:,">
+  <title>Шахи и взятия</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main>
+  <p class="kicker">Урок 1 · около 8 минут</p>
+  <h1>Шахи и взятия</h1>
+  <p class="lead">Один вопрос перед ходом, чтобы реже зевать в начале партии.</p>
+
+  <p>За год ты прибавила почти 200 пунктов и уже обыгрываешь соперников сильнее себя. Поэтому мы искали не общую слабость, а конкретное место, где уходят очки. Оно нашлось: первые 12 ходов.</p>
+
+  <table class="data">
+    <thead>
+      <tr><th>Ходы партии</th><th>Твои зевки</th><th>Зевки соперников</th></tr>
+    </thead>
+    <tbody>
+      <tr class="hi"><td>1–12</td><td>10,5%</td><td>6,5%</td></tr>
+      <tr><td>13–30</td><td>6,4%</td><td>8,0%</td></tr>
+      <tr><td>31 и дальше</td><td>7,5%</td><td>6,8%</td></tr>
+    </tbody>
+  </table>
+  <p class="caption">Доля ходов-зевков в 23 твоих партиях с анализом движка. Партий пока немного, поэтому это направление для работы, а не точный диагноз.</p>
+
+  <p>Дело не во времени: 57 из 62 зевков ты сделала, когда на часах было больше трёх минут. И не в знаниях: ты решила 4537 задач. Но в задаче тебе уже сказали, что комбинация есть. В партии никто не предупредит.</p>
+
+  <h2>Один вопрос</h2>
+  <p class="key">Какие шахи и взятия будут у соперника после этого хода?</p>
+  <ol>
+    <li>Выбери ход, но пока не делай его.</li>
+    <li>Представь, что он уже на доске. Посмотри глазами соперника: сначала все его шахи, потом все его взятия.</li>
+    <li>Проверь, что ты теряешь после каждого из них. Если ничего, ходи.</li>
+  </ol>
+  <p>Важно смотреть на всю доску, а не искать знакомый узор. Тренер Дэн Хейсман <a href="https://www.chess.com/article/view/passive-vs-basic-hope-chess">называет это игрой на авось</a>: кажется, что ты проверяешь ход, но опасность замечаешь, только если она похожа на что-то известное. Он советует проверять шахи, взятия и угрозы. Начнём с первых двух: этого хватит для всех позиций ниже.</p>
+
+  <h2>Разберём на примере</h2>
+  <div id="example"></div>
+
+  <h2>Твоя очередь</h2>
+  <p>Шесть позиций из твоих партий. Не каждый ход здесь плохой: иногда шах или взятие есть, но ничего не дают. Не спеши, считается только первая попытка.</p>
+  <div id="trainer"></div>
+
+  <h2>Задание на партии</h2>
+  <p>Навык появится только в настоящей игре. До следующего урока сыграй три партии 10+5:</p>
+  <ol>
+    <li>С 3-го по 12-й ход не делай ход быстрее чем за 15 секунд, даже если он очевиден. Сейчас ты тратишь на такой ход около 8 секунд. На 10 ходов уйдёт примерно на минуту больше, а запас у тебя есть.</li>
+    <li>На каждом из этих ходов задавай вопрос урока.</li>
+    <li>После партии запроси компьютерный анализ на lichess, даже если выиграла. Так мы сравним твои зевки в начале партии с нынешними.</li>
+  </ol>
+  <p><a href="../reference/proverka-pered-hodom.html">Шпаргалку</a> можно открыть рядом с партией или распечатать.</p>
+
+  <h2>Как всё прошло</h2>
+  <form class="form" id="result">
+    <fieldset>
+      <legend>Насколько было сложно?</legend>
+      <div class="opts">
+        <label><input type="radio" name="difficulty" value="легко"> Легко</label>
+        <label><input type="radio" name="difficulty" value="в самый раз"> В самый раз</label>
+        <label><input type="radio" name="difficulty" value="трудно"> Трудно</label>
+      </div>
+    </fieldset>
+    <label for="comment">Что осталось непонятным? Что показалось спорным?</label>
+    <textarea id="comment" placeholder="Любой вопрос по уроку или по твоим партиям"></textarea>
+    <div class="btn-row">
+      <button class="btn primary" type="button" data-send>Отправить итог</button>
+    </div>
+    <p class="form-status" role="status"></p>
+    <label for="summary">Текст итога</label>
+    <textarea class="out" id="summary" readonly></textarea>
+  </form>
+  <p>Отправь итог в мессенджере. Любой вопрос тоже можно написать там: разберём и его.</p>
+
+  <p class="foot">
+    Главный источник: Dan Heisman, <a href="https://www.chess.com/article/view/passive-vs-basic-hope-chess">Passive vs Basic Hope Chess</a> (на английском).<br>
+    Оценки позиций: анализ Stockfish на lichess. Урок подготовил Claude. Страница ничего не сохраняет и никуда не отправляет.<br>
+    <a href="../index.html">Все уроки</a>
+  </p>
+</main>
+
+<script src="../assets/board.js"></script>
+<script src="../assets/trainer.js"></script>
+<script>
+  var form = Lesson.ResultForm(document.getElementById('result'), { title: 'Урок 1: шахи и взятия' });
+
+  Lesson.StepBoard(document.getElementById('example'), {
+    orientation: 'black',
+    steps: [
+      {
+        fen: 'rnbqk1nr/pppp1ppp/8/2b1p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 3 3',
+        arrows: [{ from: 'g7', to: 'g6', kind: 'plan' }],
+        text: 'Белые сыграли Фh5 и грозят матом на f7. Ты это видишь и хочешь прогнать ферзя ходом <strong>3...g6</strong>. План логичный. Проверим его.'
+      },
+      {
+        fen: 'rnbqk1nr/pppp1p1p/6p1/2b1p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 4',
+        arrows: [{ from: 'h5', to: 'e5', kind: 'danger' }],
+        marks: [{ sq: 'g7', kind: 'last' }, { sq: 'g6', kind: 'last' }],
+        text: 'Ход сделан. Смотрим на взятия белых. Ферзь не обязан отступать: он забирает пешку <strong>4.Фxe5+</strong>, да ещё с шахом.'
+      },
+      {
+        fen: 'rnbqk1nr/pppp1p1p/6p1/2b1Q3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4',
+        arrows: [{ from: 'e5', to: 'e8', kind: 'danger' }, { from: 'e5', to: 'c5', kind: 'danger' }, { from: 'e5', to: 'h8', kind: 'danger' }],
+        text: 'Теперь ферзь бьёт короля, слона c5 и ладью h8. Защитить всё сразу нельзя. <strong>Атакованная фигура ходит первой</strong>, и прогнать её не значит защититься.'
+      },
+      {
+        fen: 'rnbqk1nr/pppp1ppp/8/2b1p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 3 3',
+        arrows: [{ from: 'd8', to: 'e7', kind: 'good' }],
+        text: 'Лучше было <strong>3...Фe7</strong>: ферзь защищает сразу и f7, и e5. Оценка движка остаётся равной.'
+      }
+    ]
+  });
+
+  Lesson.SafetyTrainer(document.getElementById('trainer'), {
+    items: [
+      {
+        side: 'white',
+        label: '6.f3',
+        before: 'rnbqk2r/pppp1ppp/4p3/8/2PPn3/P1P5/4PPPP/R1BQKBNR w KQkq - 1 6',
+        after: 'rnbqk2r/pppp1ppp/4p3/8/2PPn3/P1P2P2/4P1PP/R1BQKBNR b KQkq - 0 6',
+        plan: { from: 'f2', to: 'f3' },
+        safe: false,
+        reply: { from: 'd8', to: 'h4' },
+        near: [{ from: 'e4', to: 'c3', text: 'Конь заберёт пешку, но это не самое опасное. Проверь шахи.' }],
+        note: 'Ход f3 открыл диагональ от h4 к королю. После 6...Фh4+ 7.g3 Кxg3 пропадает ладья h1. Лучше было 6.e3.'
+      },
+      {
+        side: 'white',
+        label: '8.Кf3',
+        before: 'r1bqk2r/ppp2ppp/2n3n1/3pP3/5B2/P1P5/2P1PPPP/1R1QKBNR w Kkq - 3 8',
+        after: 'r1bqk2r/ppp2ppp/2n3n1/3pP3/5B2/P1P2N2/2P1PPPP/1R1QKB1R b Kkq - 4 8',
+        plan: { from: 'g1', to: 'f3' },
+        safe: false,
+        reply: { from: 'g6', to: 'f4' },
+        near: [
+          { from: 'g6', to: 'e5', text: 'Пешка e5 защищена. Посмотри, что ещё можно взять.' },
+          { from: 'c6', to: 'e5', text: 'Пешка e5 защищена. Посмотри, что ещё можно взять.' }
+        ],
+        note: 'Конь защитил пешку e5, но слон f4 остался без защиты: 8...Кxf4, и белые теряют фигуру.'
+      },
+      {
+        side: 'white',
+        label: '5.g3',
+        before: 'rnbqk2r/pppp1ppp/8/2bPp2n/2P5/5P2/PP2P1PP/RNBQKBNR w KQkq - 1 5',
+        plan: { from: 'g2', to: 'g3' },
+        safe: true,
+        note: 'У соперника есть шахи 5...Сf2+ и 5...Сb4+ и взятия 5...Сxg1 и 5...Кxg3, но все они ничего не выигрывают. Зато шах 5...Фh4+ закрыт. Сам факт шаха ещё не причина отказаться от хода: важно, что он даёт. В партии было 5.e4, и сразу последовало 5...Фh4+.'
+      },
+      {
+        side: 'black',
+        label: '9...a6',
+        before: 'rnb1k2r/ppp2pp1/3p1q1p/1N2p3/2B1P3/5N2/PbP2PPP/1R1QK2R b Kkq - 1 9',
+        after: 'rnb1k2r/1pp2pp1/p2p1q1p/1N2p3/2B1P3/5N2/PbP2PPP/1R1QK2R w Kkq - 0 10',
+        plan: { from: 'a7', to: 'a6' },
+        safe: false,
+        reply: { from: 'b5', to: 'c7' },
+        near: [{ from: 'b1', to: 'b2', text: 'Ладья заберёт слона, но ты заберёшь коня: 10...axb5. Поищи ход с шахом.' }],
+        note: 'Снова атакованная фигура ходит первой: 10.Кxc7+ бьёт короля и ладью a8. Лучше было 9...Кa6: конь защищает c7. Слона уже не спасти, но ладья остаётся на доске.'
+      },
+      {
+        side: 'white',
+        label: '8.e3',
+        before: 'r1bqk2r/ppp2ppp/2n3n1/3pP3/5B2/P1P5/2P1PPPP/1R1QKBNR w Kkq - 3 8',
+        plan: { from: 'e2', to: 'e3' },
+        safe: true,
+        note: 'Уже знакомая позиция. Теперь слон защищён пешкой: на 8...Кxf4 будет 9.exf4, простой размен. Чёрные могут забрать пешку e5, но это лишь возвращает лишнюю пешку белых, и позиция равная. Это лучший ход по оценке движка.'
+      },
+      {
+        side: 'black',
+        label: '7...g6',
+        before: 'r1bqkbnr/ppp3pp/8/3pp2Q/8/3BP3/PPP2PPP/RNB1K2R b KQkq - 1 7',
+        after: 'r1bqkbnr/ppp4p/6p1/3pp2Q/8/3BP3/PPP2PPP/RNB1K2R w KQkq - 0 8',
+        plan: { from: 'g7', to: 'g6' },
+        safe: false,
+        reply: { from: 'h5', to: 'e5' },
+        accept: [{ from: 'd3', to: 'g6' }],
+        note: 'Тот же приём, что в разборе, но в другой партии. 8.Фxe5+ бьёт короля и ладью h8. Сильно и 8.Сxg6+, но взятие ферзём проще. Лучше было некрасивое 7...Крd7: зато ладья цела.'
+      }
+    ],
+    onFinish: function (result) { form.setResult(result); }
+  });
+</script>
+</body>
+</html>
