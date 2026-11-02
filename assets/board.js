@@ -208,8 +208,17 @@
     Object.keys(this.squares).forEach(function (name) { self.squares[name].disabled = false; });
   };
 
+  /* Одно нажатие на любое поле, например чтобы указать фигуру под ударом. */
+  Board.prototype.pickSquare = function (onSquare) {
+    var self = this;
+    this.onSquare = onSquare;
+    this.el.classList.add('picking');
+    Object.keys(this.squares).forEach(function (name) { self.squares[name].disabled = false; });
+  };
+
   Board.prototype.stopPick = function () {
     var self = this;
+    this.onSquare = null;
     this.pickSide = null;
     this.onMove = null;
     this.selected = null;
@@ -219,6 +228,10 @@
   };
 
   Board.prototype.tap = function (name) {
+    if (this.onSquare) {
+      this.onSquare(name);
+      return;
+    }
     if (!this.pickSide) { return; }
     if (this.isSide(name)) {
       var same = this.selected === name;

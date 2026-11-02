@@ -13,16 +13,24 @@
 <main>
   <p class="kicker">Шпаргалка</p>
   <h1>Проверка перед ходом</h1>
-  <p class="key">Какие шахи и взятия будут у соперника после этого хода?</p>
+  <p class="key">Что изменил его ход? Что он теперь бьёт?</p>
+  <p class="key">Какие шахи и взятия будут у соперника после моего хода?</p>
   <ol>
+    <li>Посмотри, куда бьёт фигура, которая только что ходила, и не открыла ли она линию.</li>
+    <li>Если что-то под ударом, сначала реши это.</li>
     <li>Выбери ход, но пока не делай его.</li>
     <li>Представь его на доске. Посмотри все шахи соперника, потом все взятия.</li>
     <li>Проверь, что ты теряешь после каждого из них. Если ничего, ходи.</li>
   </ol>
-  <p>С 3-го по 12-й ход: не быстрее 15 секунд на ход. Атакованная фигура ходит первой: прогнать её не значит защититься.</p>
+  <p>С 3-го по 12-й ход: от 15 до 30 секунд на ход. После 20-го хода на часах не меньше 4 минут. Атакованная фигура ходит первой: прогнать её не значит защититься.</p>
 
-  <h2>Четыре ловушки из твоих партий</h2>
+  <h2>Пять ловушек из твоих партий</h2>
   <div class="cards">
+    <section class="card">
+      <div id="b5"></div>
+      <h3>Не заметила удар по ферзю</h3>
+      <p>Своя идея важнее? Нет: сначала реши, что делать с ударом коня b6.</p>
+    </section>
     <section class="card">
       <div id="b1"></div>
       <h3>Прогнала ферзя ходом g6</h3>
@@ -46,14 +54,15 @@
   </div>
 
   <p class="foot">
-    <a href="../lessons/0001-shahi-i-vzyatiya.html">Урок 1: шахи и взятия</a> · <a href="../index.html">Все уроки</a><br>
-    Источник: Dan Heisman, <a href="https://www.chess.com/article/view/passive-vs-basic-hope-chess">Passive vs Basic Hope Chess</a>.
+    <a href="../lessons/0001-shahi-i-vzyatiya.html">Урок 1</a> · <a href="../lessons/0002-chto-izmenil-hod.html">Урок 2</a> · <a href="../index.html">Все уроки</a><br>
+    Источники: Dan Heisman, <a href="https://www.chess.com/article/view/passive-vs-basic-hope-chess">Passive vs Basic Hope Chess</a>, <a href="https://forwardchess.com/blog/review-looking-for-trouble-recognizing-and-meeting-threats-in-chess/">обзор книги Looking for Trouble</a>.
   </p>
 </main>
 
 <script src="../assets/board.js"></script>
 <script>
   [
+    { id: 'b5', side: 'white', fen: 'r2qk2r/6bp/1n1BBnp1/pPpP4/Q7/2N1p3/PP2P2P/2KR1R2 w kq - 1 22', arrows: [{ from: 'b6', to: 'a4', kind: 'danger' }] },
     { id: 'b1', side: 'black', fen: 'rnbqk1nr/pppp1p1p/6p1/2b1p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 4', arrows: [{ from: 'h5', to: 'e5', kind: 'danger' }] },
     { id: 'b2', side: 'white', fen: 'rnbqk2r/pppp1ppp/4p3/8/2PPn3/P1P2P2/4P1PP/R1BQKBNR b KQkq - 0 6', arrows: [{ from: 'd8', to: 'h4', kind: 'danger' }] },
     { id: 'b3', side: 'white', fen: 'r1bqk2r/ppp2ppp/2n3n1/3pP3/5B2/P1P2N2/2P1PPPP/1R1QKB1R b Kkq - 4 8', arrows: [{ from: 'g6', to: 'f4', kind: 'danger' }] },

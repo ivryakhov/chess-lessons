@@ -114,8 +114,14 @@
       say('');
     }
 
+    function slip() {
+      if (!cleanDecision && misses > 0) { return 'выбор и доска'; }
+      if (!cleanDecision) { return 'выбор'; }
+      return misses > 0 ? 'доска' : '';
+    }
+
     function finishItem(ok, text, cls) {
-      results.push({ label: items[index].label, ok: ok });
+      results.push({ label: items[index].label, ok: ok, slip: slip() });
       board.stopPick();
       updateHead();
       choices.style.display = 'none';
@@ -161,7 +167,8 @@
       var item = items[index];
       if (item.safe) {
         var ok = saysSafe;
-        finishItem(ok, '<strong>' + (ok ? 'Верно, можно.' : 'Здесь можно играть.') + '</strong> ' + item.note, ok ? 'good' : 'bad');
+        cleanDecision = saysSafe;
+        finishItem(ok,'<strong>' + (ok ? 'Верно, можно.' : 'Здесь можно играть.') + '</strong> ' + item.note, ok ? 'good' : 'bad');
         return;
       }
       if (saysSafe) {
@@ -172,22 +179,158 @@
       }
     }
 
-    function finish() {
-      var good = results.filter(function (r) { return r.ok; }).length;
-      var missed = results.filter(function (r) { return !r.ok; }).map(function (r) { return r.label; });
-      root.textContent = '';
-      var done = el('p', 'tr-final');
-      done.innerHTML = 'С первого раза: <strong>' + good + ' из ' + items.length + '</strong>.' +
-        (missed.length ? ' Над этими позициями стоит подумать ещё раз: ' + missed.join(', ') + '.' : ' Все позиции решены с первого раза.');
-      root.appendChild(done);
-      config.onFinish({ good: good, total: items.length, missed: missed });
-    }
-
     can.addEventListener('click', function () { choose(true); });
     cannot.addEventListener('click', function () { choose(false); });
     next.addEventListener('click', function () {
       index += 1;
-      if (index === items.length) { finish(); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
+      if (index === items.length) { showTotal(root, results, config.onFinish); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
+    });
+    show();
+  }
+
+  function showTotal(root, results, onFinish) {
+    var good = results.filter(function (r) { return r.ok; }).length;
+    var wrong = results.filter(function (r) { return !r.ok; });
+    var missed = wrong.map(function (r) { return r.label; });
+    var detail = wrong.map(function (r) { return r.label + ' (' + r.slip + ')'; });
+    var done = el('p', 'tr-final');
+    root.textContent = '';
+    done.innerHTML = 'С первого раза: <strong>' + good + ' из ' + results.length + '</strong>.' +
+      (missed.length ? ' Над этими позициями стоит подумать ещё раз: ' + missed.join(', ') + '.' : ' Все позиции решены с первого раза.');
+    root.appendChild(done);
+    onFinish({ good: good, total: results.length, missed: missed, detail: detail });
+  }
+
+  /*
+   * Сначала ученица ищет, что бьёт соперник, потом сама выбирает ход.
+   * items: [{ side, fen, last: {from, to}, label, threats: [поле], noneOk, threatArrows: [{from, to}],
+   *           threatNote (HTML), moves: { e2e4: {ok, san, reply: {from, to, san}} }, best: 'e2e4', note (HTML) }]
+   */
+  function ThreatTrainer(root, config) {
+    var items = config.items;
+    var index = 0;
+    var misses = 0;
+    var sawThreat = true;
+    var results = [];
+    var head = el('div', 'tr-head');
+    var counter = el('span');
+    var score = el('span');
+    var prompt = el('p', 'tr-prompt');
+    var host = el('div');
+    var choices = el('div', 'btn-row');
+    var none = button('Ничего важного');
+    var note = el('p', 'tr-note');
+    var row = el('div', 'btn-row');
+    var next = button('Следующая позиция', 'primary');
+    var board;
+
+    head.appendChild(counter);
+    head.appendChild(score);
+    choices.appendChild(none);
+    row.appendChild(next);
+    root.classList.add('widget');
+    [head, prompt, host, choices, note, row].forEach(function (node) { root.appendChild(node); });
+    board = new window.ChessBoard(host, { orientation: items[0].side });
+
+    function say(text, cls) {
+      note.className = 'tr-note' + (cls ? ' ' + cls : '');
+      note.innerHTML = text;
+    }
+
+    function updateHead() {
+      var good = results.filter(function (r) { return r.ok; }).length;
+      counter.textContent = 'Позиция ' + Math.min(index + 1, items.length) + ' из ' + items.length;
+      score.textContent = 'С первого раза: ' + good;
+    }
+
+    function own(square) {
+      var piece = board.placement[square];
+      return Boolean(piece) && (piece === piece.toUpperCase()) === (items[index].side === 'white');
+    }
+
+    function slip() {
+      if (!sawThreat && misses > 0) { return 'угроза и ход'; }
+      if (!sawThreat) { return 'угроза'; }
+      return misses > 0 ? 'ход' : '';
+    }
+
+    function finishItem(ok, arrows, text, cls) {
+      results.push({ label: items[index].label, ok: ok, slip: slip() });
+      board.stopPick();
+      board.arrows(arrows);
+      updateHead();
+      prompt.innerHTML = 'Разбор позиции после хода <strong>' + items[index].label + '</strong>.';
+      row.style.display = '';
+      next.textContent = index === items.length - 1 ? 'Посмотреть результат' : 'Следующая позиция';
+      say(text, cls);
+      next.focus({ preventScroll: true });
+    }
+
+    function tryMove(from, to) {
+      var item = items[index];
+      var move = item.moves[from + to];
+      if (!move) {
+        say('Так пойти нельзя. Выбери другой ход.', 'hint');
+        return;
+      }
+      if (move.ok) {
+        finishItem(sawThreat && misses === 0, [{ from: from, to: to, kind: 'good' }],
+          '<strong>' + (misses === 0 ? 'Хороший ход.' : 'Теперь хорошо.') + '</strong> ' + item.note, misses === 0 ? 'good' : 'bad');
+        return;
+      }
+      misses += 1;
+      if (misses >= 2) {
+        finishItem(false, [{ from: item.best.slice(0, 2), to: item.best.slice(2, 4), kind: 'good' }],
+          '<strong>Лучше здесь так.</strong> ' + item.note, 'bad');
+        return;
+      }
+      board.arrows([{ from: from, to: to, kind: 'plan' }, { from: move.reply.from, to: move.reply.to, kind: 'danger' }]);
+      say('После <strong>' + move.san + '</strong> соперник ответит <strong>' + move.reply.san + '</strong>. Попробуй другой ход.', 'hint');
+    }
+
+    function askMove() {
+      var item = items[index];
+      choices.style.display = 'none';
+      prompt.textContent = 'Теперь твой ход. Нажми на свою фигуру, потом на поле.';
+      board.stopPick();
+      board.pick(item.side, tryMove);
+    }
+
+    function judgeThreat(square) {
+      var item = items[index];
+      var hit = square !== null && item.threats.indexOf(square) !== -1;
+      if (square !== null && !own(square)) {
+        say('Нажми на свою фигуру или пешку под ударом.', 'hint');
+        return;
+      }
+      sawThreat = hit || (square === null && (item.threats.length === 0 || Boolean(item.noneOk)));
+      board.arrows((item.threatArrows || []).map(function (a) { return { from: a.from, to: a.to, kind: 'danger' }; }));
+      say('<strong>' + (sawThreat ? 'Верно.' : 'Посмотри ещё раз.') + '</strong> ' + item.threatNote, sawThreat ? 'good' : 'bad');
+      askMove();
+    }
+
+    function show() {
+      var item = items[index];
+      var colour = item.side === 'white' ? 'белыми' : 'чёрными';
+      misses = 0;
+      sawThreat = true;
+      updateHead();
+      board.stopPick();
+      board.orient(item.side);
+      board.position(item.fen);
+      board.mark(item.last.from, 'last');
+      board.mark(item.last.to, 'last');
+      prompt.innerHTML = 'Ты играешь ' + colour + '. Соперник сыграл <strong>' + item.label + '</strong>. Что он теперь бьёт?';
+      choices.style.display = '';
+      row.style.display = 'none';
+      say('Нажми на свою фигуру под ударом. Если угрозы нет, нажми кнопку под доской.', 'hint');
+      board.pickSquare(judgeThreat);
+    }
+
+    none.addEventListener('click', function () { judgeThreat(null); });
+    next.addEventListener('click', function () {
+      index += 1;
+      if (index === items.length) { showTotal(root, results, config.onFinish); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
     });
     show();
   }
@@ -217,7 +360,8 @@
   function ResultForm(form, config) {
     var started = Date.now();
     var result = null;
-    var comment = form.querySelector('textarea');
+    var comment = form.querySelector('#comment');
+    var extras = form.querySelectorAll('[data-line]');
     var output = form.querySelector('.out');
     var status = form.querySelector('.form-status');
     var send = form.querySelector('[data-send]');
@@ -231,13 +375,16 @@
       var lines = [config.title];
       if (result) {
         lines.push('С первого раза: ' + result.good + ' из ' + result.total);
-        lines.push('Ошибки: ' + (result.missed.length ? result.missed.join(', ') : 'нет'));
+        lines.push('Ошибки: ' + (result.detail.length ? result.detail.join(', ') : 'нет'));
         lines.push('Время: ' + Math.max(1, Math.round((Date.now() - started) / 60000)) + ' мин');
       } else {
         lines.push('Тренажёр не закончен');
       }
       lines.push('Сложность: ' + difficulty());
       lines.push('Комментарий: ' + (comment.value.trim() || 'нет'));
+      Array.prototype.forEach.call(extras, function (field) {
+        if (field.value.trim()) { lines.push(field.dataset.line + ': ' + field.value.trim()); }
+      });
       return lines.join('\n');
     }
 
@@ -262,5 +409,5 @@
     return { setResult: function (value) { result = value; refresh(); } };
   }
 
-  window.Lesson = { StepBoard: StepBoard, SafetyTrainer: SafetyTrainer, ResultForm: ResultForm };
+  window.Lesson = { StepBoard: StepBoard, SafetyTrainer: SafetyTrainer, ThreatTrainer: ThreatTrainer, ResultForm: ResultForm };
 }());
