@@ -203,14 +203,17 @@
 
   /*
    * Сначала ученица ищет, что бьёт соперник, потом сама выбирает ход.
+   * С config.spotOnly остаётся только поиск угрозы.
    * items: [{ side, fen, last: {from, to}, label, threats: [поле], noneOk, threatArrows: [{from, to}],
-   *           threatNote (HTML), moves: { e2e4: {ok, san, reply: {from, to, san}} }, best: 'e2e4', note (HTML) }]
+   *           threatNote (HTML), moves: { e2e4: {ok, san, reply: {from, to, san}} }, best: 'e2e4', note (HTML), hint (HTML) }]
    */
   function ThreatTrainer(root, config) {
     var items = config.items;
     var index = 0;
     var misses = 0;
     var sawThreat = true;
+    var picked = null;
+    var firstWrong = null;
     var results = [];
     var head = el('div', 'tr-head');
     var counter = el('span');
@@ -249,9 +252,10 @@
     }
 
     function slip() {
-      if (!sawThreat && misses > 0) { return 'угроза и ход'; }
-      if (!sawThreat) { return 'угроза'; }
-      return misses > 0 ? 'ход' : '';
+      var parts = [];
+      if (!sawThreat) { parts.push('угроза: ' + (picked || 'ничего важного')); }
+      if (misses > 0) { parts.push('ход: ' + firstWrong); }
+      return parts.join('; ');
     }
 
     function finishItem(ok, arrows, text, cls) {
@@ -279,6 +283,7 @@
         return;
       }
       misses += 1;
+      if (misses === 1) { firstWrong = move.san; }
       if (misses >= 2) {
         finishItem(false, [{ from: item.best.slice(0, 2), to: item.best.slice(2, 4), kind: 'good' }],
           '<strong>Лучше здесь так.</strong> ' + item.note, 'bad');
@@ -291,7 +296,7 @@
     function askMove() {
       var item = items[index];
       choices.style.display = 'none';
-      prompt.textContent = 'Теперь твой ход. Нажми на свою фигуру, потом на поле.';
+      prompt.innerHTML = 'Теперь твой ход. Нажми на свою фигуру, потом на поле.' + (item.hint ? ' <em>' + item.hint + '</em>' : '');
       board.stopPick();
       board.pick(item.side, tryMove);
     }
@@ -304,7 +309,13 @@
         return;
       }
       sawThreat = hit || (square === null && (item.threats.length === 0 || Boolean(item.noneOk)));
-      board.arrows((item.threatArrows || []).map(function (a) { return { from: a.from, to: a.to, kind: 'danger' }; }));
+      picked = square;
+      var arrows = (item.threatArrows || []).map(function (a) { return { from: a.from, to: a.to, kind: 'danger' }; });
+      board.arrows(arrows);
+      if (config.spotOnly) {
+        finishItem(sawThreat, arrows, '<strong>' + (sawThreat ? 'Верно.' : 'Не совсем.') + '</strong> ' + item.threatNote, sawThreat ? 'good' : 'bad');
+        return;
+      }
       say('<strong>' + (sawThreat ? 'Верно.' : 'Посмотри ещё раз.') + '</strong> ' + item.threatNote, sawThreat ? 'good' : 'bad');
       askMove();
     }
@@ -314,6 +325,8 @@
       var colour = item.side === 'white' ? 'белыми' : 'чёрными';
       misses = 0;
       sawThreat = true;
+      picked = null;
+      firstWrong = null;
       updateHead();
       board.stopPick();
       board.orient(item.side);

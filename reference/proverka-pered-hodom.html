@@ -23,9 +23,15 @@
     <li>Проверь, что ты теряешь после каждого из них. Если ничего, ходи.</li>
   </ol>
   <p>С 3-го по 12-й ход: от 15 до 30 секунд на ход. После 20-го хода на часах не меньше 4 минут. Атакованная фигура ходит первой: прогнать её не значит защититься.</p>
+  <p>Пока король не рокировал, проверь диагонали к нему: e1–h4 и e1–a5 для белых, e8–h5 и e8–a4 для чёрных.</p>
 
-  <h2>Пять ловушек из твоих партий</h2>
+  <h2>Шесть ловушек из твоих партий</h2>
   <div class="cards">
+    <section class="card">
+      <div id="b6"></div>
+      <h3>Шах ферзём издалека</h3>
+      <p>Король не рокировал, диагональ открыта: 17.Фa4+ бьёт короля и слона c4.</p>
+    </section>
     <section class="card">
       <div id="b5"></div>
       <h3>Не заметила удар по ферзю</h3>
@@ -54,7 +60,7 @@
   </div>
 
   <p class="foot">
-    <a href="../lessons/0001-shahi-i-vzyatiya.html">Урок 1</a> · <a href="../lessons/0002-chto-izmenil-hod.html">Урок 2</a> · <a href="../index.html">Все уроки</a><br>
+    <a href="../lessons/0001-shahi-i-vzyatiya.html">Урок 1</a> · <a href="../lessons/0002-chto-izmenil-hod.html">Урок 2</a> · <a href="../lessons/0003-dve-proverki.html">Урок 3</a> · <a href="../index.html">Все уроки</a><br>
     Источники: Dan Heisman, <a href="https://www.chess.com/article/view/passive-vs-basic-hope-chess">Passive vs Basic Hope Chess</a>, <a href="https://forwardchess.com/blog/review-looking-for-trouble-recognizing-and-meeting-threats-in-chess/">обзор книги Looking for Trouble</a>.
   </p>
 </main>
@@ -62,6 +68,7 @@
 <script src="../assets/board.js"></script>
 <script>
   [
+    { id: 'b6', side: 'black', fen: 'r3k2r/p1p5/3p1qpp/4p3/2b1P3/2P2N2/PP4PP/R2QK2R w KQkq - 0 17', arrows: [{ from: 'd1', to: 'a4', kind: 'danger' }] },
     { id: 'b5', side: 'white', fen: 'r2qk2r/6bp/1n1BBnp1/pPpP4/Q7/2N1p3/PP2P2P/2KR1R2 w kq - 1 22', arrows: [{ from: 'b6', to: 'a4', kind: 'danger' }] },
     { id: 'b1', side: 'black', fen: 'rnbqk1nr/pppp1p1p/6p1/2b1p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 4', arrows: [{ from: 'h5', to: 'e5', kind: 'danger' }] },
     { id: 'b2', side: 'white', fen: 'rnbqk2r/pppp1ppp/4p3/8/2PPn3/P1P2P2/4P1PP/R1BQKBNR b KQkq - 0 6', arrows: [{ from: 'd8', to: 'h4', kind: 'danger' }] },
