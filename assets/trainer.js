@@ -122,6 +122,7 @@
 
     function finishItem(ok, text, cls) {
       results.push({ label: items[index].label, ok: ok, slip: slip() });
+      config.onFinish(summary(results, items.length));
       board.stopPick();
       updateHead();
       choices.style.display = 'none';
@@ -183,22 +184,32 @@
     cannot.addEventListener('click', function () { choose(false); });
     next.addEventListener('click', function () {
       index += 1;
-      if (index === items.length) { showTotal(root, results, config.onFinish); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
+      if (index === items.length) { showTotal(root, results, items.length, config); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
     });
     show();
   }
 
-  function showTotal(root, results, onFinish) {
-    var good = results.filter(function (r) { return r.ok; }).length;
+  /* Итог по пройденным позициям: его можно отправить и до конца тренажёра. */
+  function summary(results, planned) {
     var wrong = results.filter(function (r) { return !r.ok; });
-    var missed = wrong.map(function (r) { return r.label; });
-    var detail = wrong.map(function (r) { return r.label + ' (' + r.slip + ')'; });
-    var done = el('p', 'tr-final');
+    return {
+      good: results.filter(function (r) { return r.ok; }).length,
+      total: results.length,
+      planned: planned,
+      missed: wrong.map(function (r) { return r.label; }),
+      detail: wrong.map(function (r) { return r.label + ' (' + r.slip + ')'; })
+    };
+  }
+
+  function showTotal(root, results, planned, config) {
+    var s = summary(results, planned);
+    var line = el('p', 'tr-final');
     root.textContent = '';
-    done.innerHTML = 'С первого раза: <strong>' + good + ' из ' + results.length + '</strong>.' +
-      (missed.length ? ' Над этими позициями стоит подумать ещё раз: ' + missed.join(', ') + '.' : ' Все позиции решены с первого раза.');
-    root.appendChild(done);
-    onFinish({ good: good, total: results.length, missed: missed, detail: detail });
+    line.innerHTML = 'С первого раза: <strong>' + s.good + ' из ' + s.total + '</strong>.' +
+      (s.missed.length ? ' Над этими позициями стоит подумать ещё раз: ' + s.missed.join(', ') + '.' : ' Все позиции решены с первого раза.') +
+      (config.doneNote ? ' <strong>' + config.doneNote + '</strong>' : '');
+    root.appendChild(line);
+    config.onFinish(s);
   }
 
   /*
@@ -260,6 +271,7 @@
 
     function finishItem(ok, arrows, text, cls) {
       results.push({ label: items[index].label, ok: ok, slip: slip() });
+      config.onFinish(summary(results, items.length));
       board.stopPick();
       board.arrows(arrows);
       updateHead();
@@ -343,7 +355,7 @@
     none.addEventListener('click', function () { judgeThreat(null); });
     next.addEventListener('click', function () {
       index += 1;
-      if (index === items.length) { showTotal(root, results, config.onFinish); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
+      if (index === items.length) { showTotal(root, results, items.length, config); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
     });
     show();
   }
@@ -386,12 +398,15 @@
 
     function build() {
       var lines = [config.title];
-      if (result) {
+      if (result && result.total > 0) {
+        if (result.planned && result.total < result.planned) {
+          lines.push('Пройдено позиций: ' + result.total + ' из ' + result.planned);
+        }
         lines.push('С первого раза: ' + result.good + ' из ' + result.total);
         lines.push('Ошибки: ' + (result.detail.length ? result.detail.join(', ') : 'нет'));
         lines.push('Время: ' + Math.max(1, Math.round((Date.now() - started) / 60000)) + ' мин');
       } else {
-        lines.push('Тренажёр не закончен');
+        lines.push('Тренажёр не начат');
       }
       lines.push('Сложность: ' + difficulty());
       lines.push('Комментарий: ' + (comment.value.trim() || 'нет'));

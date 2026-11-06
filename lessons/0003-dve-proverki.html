@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex">
   <link rel="icon" href="data:,">
   <title>Две проверки</title>
-  <link rel="stylesheet" href="../assets/course.css?v=3">
+  <link rel="stylesheet" href="../assets/course.css?v=4">
 </head>
 <body>
 <main>
@@ -75,21 +75,18 @@
   </p>
 </main>
 
-<script src="../assets/board.js?v=3"></script>
-<script src="../assets/trainer.js?v=3"></script>
+<script src="../assets/board.js?v=4"></script>
+<script src="../assets/trainer.js?v=4"></script>
 <script>
   var form = Lesson.ResultForm(document.getElementById('result'), { title: 'Урок 3: две проверки' });
   var spotResult = null;
   var fullResult = null;
 
   function combine() {
-    if (!spotResult || !fullResult) { return; }
-    form.setResult({
-      good: spotResult.good + fullResult.good,
-      total: spotResult.total + fullResult.total,
-      missed: spotResult.missed.concat(fullResult.missed),
-      detail: spotResult.detail.concat(fullResult.detail)
-    });
+    var parts = [spotResult, fullResult].filter(Boolean);
+    var sum = function (key) { return parts.reduce(function (n, p) { return n + p[key]; }, 0); };
+    var join = function (key) { return parts.reduce(function (list, p) { return list.concat(p[key]); }, []); };
+    form.setResult({ good: sum('good'), total: sum('total'), planned: 9, missed: join('missed'), detail: join('detail') });
   }
 
   Lesson.StepBoard(document.getElementById('example'), {
@@ -99,6 +96,7 @@
 
   Lesson.ThreatTrainer(document.getElementById('spot'), {
     spotOnly: true,
+    doneNote: 'Это была разминка: ниже ещё три позиции полной проверки.',
     items: [{"side":"black","fen":"r1bqk2r/pppp1Npp/2n4n/2b5/2B1P3/2P5/P4PPP/RNBQK2R b KQkq - 0 8","last":{"from":"g5","to":"f7"},"label":"8.Кxf7","threats":["d8","h8"],"noneOk":false,"threatArrows":[{"from":"f7","to":"d8"},{"from":"f7","to":"h8"}],"threatNote":"Конь f7 бьёт ферзя d8 и ладью h8. Эту позицию ты видела во втором уроке."},{"side":"white","fen":"2kr2nr/1pp4p/p1npqp2/5b2/8/2PBBN2/P1P2PPP/R2QK2R w KQ - 1 15","last":{"from":"e4","to":"e6"},"label":"14...Фe6","threats":["a2"],"noneOk":true,"threatArrows":[{"from":"e6","to":"a2"}],"threatNote":"Ферзь бьёт слона e3, но его защищает пешка f2. Слон f5 бьёт слона d3, но его защищает пешка c2. Без защиты только пешка a2, и это не главное."},{"side":"black","fen":"r1bqk2r/pppp1ppp/2n2n2/1Bb1P3/3p4/2P2N2/PP3PPP/RNBQK2R b KQkq - 0 6","last":{"from":"e4","to":"e5"},"label":"6.e5","threats":["f6"],"noneOk":false,"threatArrows":[{"from":"e5","to":"f6"}],"threatNote":"Пешка e5 бьёт коня f6. В партии было 6...Кxe5, и после 7.Кxe5 ты осталась без коня за пешку."},{"side":"white","fen":"r2q2nr/pp3kpp/2npb3/3Q4/5B2/2P5/PP2PPPP/R3KBNR w KQ - 1 11","last":{"from":"f5","to":"e6"},"label":"10...Сe6","threats":["d5"],"noneOk":false,"threatArrows":[{"from":"e6","to":"d5"}],"threatNote":"Слон e6 бьёт ферзя d5. В партии ты это увидела и сыграла 11.Фxd6."},{"side":"black","fen":"r2q3r/p1p2kpp/Q2bpp2/3p1b2/3P4/N1P1P1B1/PP3PPP/R3K2R b KQ - 2 13","last":{"from":"f4","to":"g3"},"label":"13.Сg3","threats":["d6"],"noneOk":true,"threatArrows":[{"from":"g3","to":"d6"}],"threatNote":"Слон g3 бьёт слона d6, но его защищают ферзь d8 и пешка c7. Это просто размен, потери нет."},{"side":"white","fen":"r2qkbnr/ppp2ppp/2n5/1N1ppb2/3P1B2/8/PPP1PPPP/R2QKBNR w KQkq e6 0 5","last":{"from":"e7","to":"e5"},"label":"4...e5","threats":["f4","d4"],"noneOk":false,"threatArrows":[{"from":"e5","to":"f4"},{"from":"e5","to":"d4"}],"threatNote":"Пешка e5 бьёт слона f4 и пешку d4, главное здесь слон. В партии ты ответила 5.dxe5 и решила обе проблемы."}],
     onFinish: function (result) { spotResult = result; combine(); }
   });
