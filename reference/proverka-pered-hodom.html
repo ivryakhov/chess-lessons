@@ -25,8 +25,9 @@
   <p>С 3-го по 12-й ход: от 15 до 30 секунд на ход. После 20-го хода на часах не меньше 4 минут. Атакованная фигура ходит первой: прогнать её не значит защититься.</p>
   <p>Пока король не рокировал, проверь диагонали к нему: e1–h4 и e1–a5 для белых, e8–h5 и e8–a4 для чёрных.</p>
   <p>Найди его ферзя, ладьи и слонов и проведи их линии до края доски или до первой фигуры. Не попадает ли на линию поле, куда встаёт твоя фигура, или твой король? Свой ход может открыть линию: проверь и это.</p>
+  <p>Конь бьёт до восьми полей: пройди их все по кругу, не останавливайся на первой фигуре. Перед ходом посмотри, куда могут прыгнуть его кони и не будут ли они оттуда бить две фигуры сразу.</p>
 
-  <h2>Восемь ловушек из твоих партий</h2>
+  <h2>Десять ловушек из твоих партий</h2>
   <div class="cards">
     <section class="card">
       <div id="b6"></div>
@@ -68,10 +69,20 @@
       <h3>Пешка g открыла горизонталь</h3>
       <p>35...Фd2+: король не может взять ферзя, его защищает ладья d8. Пропадает ладья e1.</p>
     </section>
+    <section class="card">
+      <div id="b9"></div>
+      <h3>Пешку c3 никто не защищал</h3>
+      <p>19...Кxc3 бьёт сразу ферзя d1 и ладью b1.</p>
+    </section>
+    <section class="card">
+      <div id="b10"></div>
+      <h3>Защитник связан</h3>
+      <p>Пешка c3 не может взять на b4: за ней ладья c6 и король. 25...Кxb4+ бьёт короля и ладью d3.</p>
+    </section>
   </div>
 
   <p class="foot">
-    <a href="../lessons/0001-shahi-i-vzyatiya.html">Урок 1</a> · <a href="../lessons/0002-chto-izmenil-hod.html">Урок 2</a> · <a href="../lessons/0003-dve-proverki.html">Урок 3</a> · <a href="../lessons/0004-dalnoboynye-figury.html">Урок 4</a> · <a href="../index.html">Все уроки</a><br>
+    <a href="../lessons/0001-shahi-i-vzyatiya.html">Урок 1</a> · <a href="../lessons/0002-chto-izmenil-hod.html">Урок 2</a> · <a href="../lessons/0003-dve-proverki.html">Урок 3</a> · <a href="../lessons/0004-dalnoboynye-figury.html">Урок 4</a> · <a href="../lessons/0005-vse-polya-konya.html">Урок 5</a> · <a href="../index.html">Все уроки</a><br>
     Источники: Dan Heisman, <a href="https://www.chess.com/article/view/passive-vs-basic-hope-chess">Passive vs Basic Hope Chess</a>, <a href="https://forwardchess.com/blog/review-looking-for-trouble-recognizing-and-meeting-threats-in-chess/">обзор книги Looking for Trouble</a>.
   </p>
 </main>
@@ -86,7 +97,9 @@
     { id: 'b3', side: 'white', fen: 'r1bqk2r/ppp2ppp/2n3n1/3pP3/5B2/P1P2N2/2P1PPPP/1R1QKB1R b Kkq - 4 8', arrows: [{ from: 'g6', to: 'f4', kind: 'danger' }] },
     { id: 'b4', side: 'black', fen: 'rnb1k2r/1pp2pp1/p2p1q1p/1N2p3/2B1P3/5N2/PbP2PPP/1R1QK2R w Kkq - 0 10', arrows: [{ from: 'b5', to: 'c7', kind: 'danger' }] },
     { id: 'b7', side: 'black', fen: '3k4/p1p2pp1/2p5/7B/2b1NP2/8/P4KPP/3n4 w - - 2 24', arrows: [{ from: 'h5', to: 'd1', kind: 'danger' }] },
-    { id: 'b8', side: 'white', fen: '3r3k/p5p1/8/2p5/4B3/1Q2P1P1/2P4q/2K1R3 b - - 0 35', arrows: [{ from: 'h2', to: 'd2', kind: 'danger' }] }
+    { id: 'b8', side: 'white', fen: '3r3k/p5p1/8/2p5/4B3/1Q2P1P1/2P4q/2K1R3 b - - 0 35', arrows: [{ from: 'h2', to: 'd2', kind: 'danger' }] },
+    { id: 'b9', side: 'white', fen: 'r1b1r1k1/pp3p1p/2p1p3/3nPp2/3P4/2PB1N2/q1P3PP/1R1QK2R b K - 4 19', arrows: [{ from: 'd5', to: 'c3', kind: 'danger' }] },
+    { id: 'b10', side: 'white', fen: '2k5/1pp3p1/p1r1p1p1/3n1p2/PP1P3r/2PR3P/2K2PB1/3R4 b - - 2 25', arrows: [{ from: 'd5', to: 'b4', kind: 'danger' }, { from: 'c6', to: 'c2', kind: 'plan' }] }
   ].forEach(function (item) {
     var board = new ChessBoard(document.getElementById(item.id), { orientation: item.side, fen: item.fen });
     board.arrows(item.arrows);

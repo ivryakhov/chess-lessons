@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:,">
+  <title>Все поля коня</title>
+  <link rel="stylesheet" href="../assets/course.css?v=4">
+</head>
+<body>
+<main>
+  <p class="kicker">Урок 5 · около 10 минут</p>
+  <h1>Все поля коня</h1>
+  <p class="lead">Конь бьёт сразу несколько полей. Легко увидеть одно и пропустить главное.</p>
+
+  <p>Три партии 7 ноября — три победы. На ходы с 3-го по 12-й ты теперь тратишь около 13 секунд, и в первых двенадцати ходах зевков почти не было. Но есть закономерность: конь соперника наказывает больше трети твоих зевков, а у твоих соперников — примерно каждый пятый. В партиях 7 ноября — шесть из двенадцати.</p>
+
+  <h2>Пройди все поля</h2>
+  <div id="example"></div>
+
+  <p class="key">У коня до восьми полей. Пройди их все по кругу и назови, что стоит на каждом. Не останавливайся на первой фигуре: главная цель может оказаться последней.</p>
+
+  <h2>Разминка: что бьёт его конь?</h2>
+  <p>Соперник только что пошёл конём. Нажми на свою фигуру, которая под настоящим ударом, или на «Ничего важного». Фигура под ударом, но с защитой — ещё не угроза, если конь не дешевле её.</p>
+  <div id="spot"></div>
+
+  <h2>Куда прыгнет его конь?</h2>
+  <p class="key">Перед ходом посмотри на его коней: куда каждый может прыгнуть и что будет бить оттуда. Если два удара сразу, проверь, защищено ли это поле.</p>
+  <p>Реши, можно ли сыграть ход. Если нельзя, покажи ответ соперника. Иногда прыжок выглядит страшно, но поле защищено.</p>
+  <div id="safety"></div>
+
+  <h2>Задание на партии</h2>
+  <p>До следующего урока сыграй три партии 10+5:</p>
+  <ol>
+    <li>Когда соперник пошёл конём, пройди все поля коня и назови, что на каждом.</li>
+    <li>Перед своим ходом посмотри, куда могут прыгнуть его кони. Остальная проверка та же: что изменил его ход, какие шахи и взятия будут после твоего хода, линии его ферзя, ладей и слонов.</li>
+    <li>После каждой партии, до анализа движком, найди один ход соперника, который тебя удивил, и пришли его в мессенджере вместе с одной фразой о том, что ты не увидела.</li>
+  </ol>
+  <p><a href="../reference/proverka-pered-hodom.html">Шпаргалку</a> можно открыть рядом с партией.</p>
+
+  <h2>Как всё прошло</h2>
+  <form class="form" id="result">
+    <fieldset>
+      <legend>Насколько было сложно?</legend>
+      <div class="opts">
+        <label><input type="radio" name="difficulty" value="легко"> Легко</label>
+        <label><input type="radio" name="difficulty" value="в самый раз"> В самый раз</label>
+        <label><input type="radio" name="difficulty" value="трудно"> Трудно</label>
+      </div>
+    </fieldset>
+    <label for="comment">Что осталось непонятным? Что показалось спорным?</label>
+    <textarea id="comment" placeholder="Любой вопрос по уроку или по твоим партиям"></textarea>
+    <p></p>
+    <label for="surprise">Какой ход соперника в последних партиях тебя удивил? Что ты не увидела?</label>
+    <textarea id="surprise" data-line="Ход, который удивил" placeholder="Например: 24.Сxd1, не заметила слона h5"></textarea>
+    <div class="btn-row">
+      <button class="btn primary" type="button" data-send>Отправить итог</button>
+    </div>
+    <p class="form-status" role="status"></p>
+    <label for="summary">Текст итога</label>
+    <textarea class="out" id="summary" readonly></textarea>
+  </form>
+  <p>Отправь итог в мессенджере. Любой вопрос тоже можно написать там: разберём и его.</p>
+
+  <p class="foot">
+    Главный источник: <a href="https://forwardchess.com/blog/review-looking-for-trouble-recognizing-and-meeting-threats-in-chess/">обзор книги Dan Heisman «Looking for Trouble»</a> (на английском).<br>
+    Оценки позиций: Stockfish. Урок подготовил Claude. Страница ничего не сохраняет и никуда не отправляет.<br>
+    <a href="0001-shahi-i-vzyatiya.html">Урок 1</a> · <a href="0002-chto-izmenil-hod.html">Урок 2</a> · <a href="0003-dve-proverki.html">Урок 3</a> · <a href="0004-dalnoboynye-figury.html">Урок 4</a> · <a href="../reference/proverka-pered-hodom.html">Шпаргалка</a> · <a href="../index.html">Все уроки</a>
+  </p>
+</main>
+
+<script src="../assets/board.js?v=4"></script>
+<script src="../assets/trainer.js?v=4"></script>
+<script>
+  var form = Lesson.ResultForm(document.getElementById('result'), { title: 'Урок 5: все поля коня' });
+  var spotResult = null;
+  var safetyResult = null;
+
+  function combine() {
+    var parts = [spotResult, safetyResult].filter(Boolean);
+    var sum = function (key) { return parts.reduce(function (n, p) { return n + p[key]; }, 0); };
+    var join = function (key) { return parts.reduce(function (list, p) { return list.concat(p[key]); }, []); };
+    form.setResult({ good: sum('good'), total: sum('total'), planned: 9, missed: join('missed'), detail: join('detail') });
+  }
+
+  Lesson.StepBoard(document.getElementById('example'), {
+    orientation: 'black',
+    steps: [{"fen":"r1bqk2r/pppp1Npp/2n4n/2b5/2B1P3/2P5/P4PPP/RNBQK2R b KQkq - 0 8","marks":[{"sq":"g5","kind":"last"},{"sq":"f7","kind":"last"}],"text":"Позиция из второго урока: соперник сыграл <strong>8.Кxf7</strong>. В этот раз ты нажала коня h6. Конь f7 его действительно бьёт, но это не всё."},{"fen":"r1bqk2r/pppp1Npp/2n4n/2b5/2B1P3/2P5/P4PPP/RNBQK2R b KQkq - 0 8","arrows":[{"from":"f7","to":"d8","kind":"plan"},{"from":"f7","to":"h8","kind":"plan"},{"from":"f7","to":"h6","kind":"plan"},{"from":"f7","to":"d6","kind":"plan"},{"from":"f7","to":"e5","kind":"plan"},{"from":"f7","to":"g5","kind":"plan"}],"text":"Пройди все поля коня по кругу. Отсюда их шесть: d8 — ферзь, h8 — ладья, h6 — конь, а d6, e5 и g5 пустые."},{"fen":"r1bqk2r/pppp1Npp/2n4n/2b5/2B1P3/2P5/P4PPP/RNBQK2R b KQkq - 0 8","arrows":[{"from":"f7","to":"d6","kind":"plan"},{"from":"f7","to":"e5","kind":"plan"},{"from":"f7","to":"g5","kind":"plan"},{"from":"f7","to":"h6","kind":"plan"},{"from":"f7","to":"d8","kind":"danger"},{"from":"f7","to":"h8","kind":"danger"}],"text":"Конь h6 защищён пешкой g7: на 9.Кxh6 gxh6 будет просто размен. А ферзь d8 и ладья h8 под ударом по-настоящему: ферзь дороже коня, ладья без защиты."},{"fen":"r1bqk2r/pppp1Npp/2n4n/2b5/2B1P3/2P5/P4PPP/RNBQK2R b KQkq - 0 8","arrows":[{"from":"h6","to":"f7","kind":"good"},{"from":"d8","to":"f6","kind":"good"}],"text":"Проще всего взять коня: <strong>8...Кxf7</strong>, конь h6 как раз защищал это поле. Ещё сильнее <strong>8...Фf6</strong>: ферзь уходит и сам грозит матом на f2."}]
+  });
+
+  Lesson.ThreatTrainer(document.getElementById('spot'), {
+    spotOnly: true,
+    doneNote: 'Это была разминка: ниже ещё пять позиций.',
+    items: [{"side":"white","fen":"r1bqk2r/ppp2ppp/2n3n1/3pP3/5B2/P1P5/2P1PPPP/1R1QKBNR w Kkq - 3 8","last":{"from":"e7","to":"g6"},"label":"7...Кg6","threats":["f4"],"noneOk":false,"threatArrows":[{"from":"g6","to":"f4"},{"from":"g6","to":"e5"}],"threatNote":"Конь g6 бьёт слона f4 и пешку e5. Пешку защищает слон, а сам слон без защиты: 8...Кxf4. Эту позицию ты видела в первом уроке: в партии было 8.Кf3, и слон пропал."},{"side":"black","fen":"2kr1r2/8/p3p2p/PpPp2p1/1P1q1P2/5NPP/4K3/1R3Q1R b - - 2 28","last":{"from":"d2","to":"f3"},"label":"28.Кf3","threats":["d4"],"noneOk":false,"threatArrows":[{"from":"f3","to":"g5"},{"from":"f3","to":"d4"}],"threatNote":"Конь f3 бьёт ферзя d4 и пешку g5. Пешку защищает пешка h6, а ферзя нужно уводить. В партии ты так и сделала: 28...Фc4+."},{"side":"black","fen":"r2q1rk1/p1p1n1pp/2pb1p2/4p3/2Np4/1P1P1NPb/PBP1PP1P/R2QR1K1 b - - 4 11","last":{"from":"d2","to":"c4"},"label":"11.Кc4","threats":["d6"],"noneOk":true,"threatArrows":[{"from":"c4","to":"d6"},{"from":"c4","to":"e5"}],"threatNote":"Конь c4 бьёт слона d6 и пешку e5, но обе защищены: слона — пешкой c7 и ферзём d8, пешку — слоном d6 и пешкой f6. На 12.Кxd6 будет 12...cxd6, это просто размен."},{"side":"white","fen":"2r2rk1/p1pR2n1/1p2p3/4npB1/2P1b3/P1P1P3/4BPPP/2R3K1 w - - 8 21","last":{"from":"c6","to":"e5"},"label":"20...Кe5","threats":["d7"],"noneOk":false,"threatArrows":[{"from":"e5","to":"d7"},{"from":"e5","to":"c4"}],"threatNote":"Конь e5 бьёт ладью d7 и пешку c4. Пешку защищает слон e2, а ладья без защиты. В партии ты её увела: 21.Лd4."}],
+    onFinish: function (result) { spotResult = result; combine(); }
+  });
+
+  Lesson.SafetyTrainer(document.getElementById('safety'), {
+    items: [{"side":"black","label":"9...a6","before":"rnb1k2r/ppp2pp1/3p1q1p/1N2p3/2B1P3/5N2/PbP2PPP/1R1QK2R b Kkq - 1 9","plan":{"from":"a7","to":"a6"},"safe":false,"note":"Конь b5 уже бил пешку c7, а ход a6 этого не решает: 10.Кxc7+ бьёт короля e8 и ладью a8. Эту позицию ты видела в первом уроке. Лучше было 9...Кa6 или 9...Фd8: они защищают c7.","after":"rnb1k2r/1pp2pp1/p2p1q1p/1N2p3/2B1P3/5N2/PbP2PPP/1R1QK2R w Kkq - 0 10","reply":{"from":"b5","to":"c7"},"near":[{"from":"b1","to":"b2","text":"Ладья заберёт слона, но ты ответишь 10...axb5 и заберёшь коня. Поищи ход с шахом."},{"from":"c4","to":"f7","text":"Шах есть, но слона заберёт король или ферзь. Посмотри на коня b5."}]},{"side":"black","label":"22...Сf5","before":"4rrk1/p1p3pp/2p2p2/8/2PQN3/qP2R1Pb/5P1P/1R4K1 b - - 0 22","plan":{"from":"h3","to":"f5"},"safe":true,"note":"У коня e4 два опасных прыжка: на f6 с шахом и ударом по ладье e8 и на d6 с ударом по ладье e8 и слону f5. Но оба поля защищены: f6 — пешкой g7 и ладьёй f8, d6 — пешкой c7. Коня просто возьмут."},{"side":"white","label":"19.Сd3","before":"r1b1r1k1/pp3p1p/2p1p3/3nPp2/3P4/2P2N2/q1P3PP/1R1QKB1R w K - 3 19","plan":{"from":"f1","to":"d3"},"safe":false,"note":"Пешку c3 никто не защищает, и 19...Кxc3 бьёт сразу ферзя d1 и ладью b1. Эта угроза стояла и до хода, слон d3 её не решает. Лучше было 19.Фc1: ферзь уходит с d1 и защищает ладью, и прыжок на c3 уже не бьёт двух фигур.","after":"r1b1r1k1/pp3p1p/2p1p3/3nPp2/3P4/2PB1N2/q1P3PP/1R1QK2R b K - 4 19","reply":{"from":"d5","to":"c3"},"near":[{"from":"a2","to":"b1","text":"Ферзь заберёт ладью, но его возьмёт ферзь d1. Посмотри, куда может прыгнуть конь d5."},{"from":"a2","to":"c2","text":"Пешку c2 защищают слон d3 и ферзь d1. Посмотри, куда может прыгнуть конь d5."}]},{"side":"black","label":"8...f6","before":"r2qkb1r/ppp1nppp/2n1p3/3pNb2/Q2P1B2/N1P1P3/PP3PPP/R3KB1R b KQkq - 4 8","plan":{"from":"f7","to":"f6"},"safe":true,"note":"Пешка гонит коня e5. Самый опасный прыжок — 9.Кf7 с ударом по ферзю d8 и ладье h8, но поле f7 защищает король. На 9.Кxc6 будет 9...Кxc6, это просто размен."},{"side":"white","label":"25.Лd3","before":"2k5/1pp3p1/p1r1p1p1/3n1p2/PP1P3r/2P4P/2KR1PB1/3R4 w - - 1 25","plan":{"from":"d2","to":"d3"},"safe":false,"note":"Пешку b4 будто бы защищает пешка c3, но она связана: за ней ладья c6 смотрит на короля c2. Поэтому 25...Кxb4+ бьёт короля и ладью d3, а взять коня нечем. Это партия 7 ноября. Лучше всего было 25.Сxd5: забрать коня, пока он не прыгнул.","after":"2k5/1pp3p1/p1r1p1p1/3n1p2/PP1P3r/2PR3P/2K2PB1/3R4 b - - 2 25","reply":{"from":"d5","to":"b4"},"near":[{"from":"c6","to":"c3","text":"Шах есть, но ладью заберут ладья d3 или король. Поищи прыжок коня."},{"from":"h4","to":"d4","text":"Пешку d4 защищают ладья d3 и пешка c3. Поищи прыжок коня."},{"from":"d5","to":"c3","text":"Конь заберёт пешку, но его возьмёт ладья d3. Есть прыжок сильнее, с шахом."},{"from":"d5","to":"e3","text":"Шах есть, но коня возьмут пешка f2 и ладья d3. Есть прыжок сильнее."}]}],
+    onFinish: function (result) { safetyResult = result; combine(); }
+  });
+</script>
+</body>
+</html>
