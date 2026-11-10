@@ -21,6 +21,64 @@
     return (list || []).some(function (m) { return m.from === from && m.to === to; });
   }
 
+  /*
+   * Память страницы: ответы хранятся только в этом браузере, чтобы перезагрузка вкладки
+   * (телефон часто перезагружает её после мессенджера) не стирала итог. Без памяти,
+   * например в приватном режиме, урок работает как раньше, просто ничего не помнит.
+   */
+  var PREFIX = 'chess-lessons:' + window.location.pathname + ':';
+
+  function load(key) {
+    try {
+      var raw = window.localStorage.getItem(PREFIX + key);
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function store(key, value) {
+    try {
+      window.localStorage.setItem(PREFIX + key, JSON.stringify(value));
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  function forget(key) {
+    try {
+      window.localStorage.removeItem(PREFIX + key);
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  /* Пройденные позиции тренажёра. Если позиции урока поменялись, старые ответы не подхватываются. */
+  function progress(root, items) {
+    var key = 'trainer:' + root.id;
+    var sig = items.map(function (item) { return item.label; }).join('|');
+    var saved = root.id ? load(key) : null;
+    var results = saved && saved.sig === sig && saved.results && saved.results.length <= items.length ? saved.results : [];
+    return {
+      results: results,
+      save: function () { if (root.id) { store(key, { sig: sig, results: results }); } },
+      reset: function () { forget(key); }
+    };
+  }
+
+  /* Продолжить с первой непройденной позиции или сразу показать итог. */
+  function resume(root, config, memory, show, restart) {
+    var results = memory.results;
+    if (results.length === config.items.length) {
+      showTotal(root, results, config.items.length, config, restart);
+      return;
+    }
+    if (results.length > 0) { config.onFinish(summary(results, config.items.length)); }
+    show();
+  }
+
   /* steps: [{ fen, text (HTML), arrows, marks }] */
   function StepBoard(root, config) {
     var index = 0;
@@ -60,10 +118,11 @@
    */
   function SafetyTrainer(root, config) {
     var items = config.items;
-    var index = 0;
+    var memory = progress(root, items);
+    var results = memory.results;
+    var index = results.length;
     var misses = 0;
     var cleanDecision = true;
-    var results = [];
     var head = el('div', 'tr-head');
     var counter = el('span');
     var score = el('span');
@@ -122,6 +181,7 @@
 
     function finishItem(ok, text, cls) {
       results.push({ label: items[index].label, ok: ok, slip: slip() });
+      memory.save();
       config.onFinish(summary(results, items.length));
       board.stopPick();
       updateHead();
@@ -180,13 +240,20 @@
       }
     }
 
+    function restart() {
+      memory.reset();
+      root.textContent = '';
+      config.onFinish(summary([], items.length));
+      SafetyTrainer(root, config);
+    }
+
     can.addEventListener('click', function () { choose(true); });
     cannot.addEventListener('click', function () { choose(false); });
     next.addEventListener('click', function () {
       index += 1;
-      if (index === items.length) { showTotal(root, results, items.length, config); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
+      if (index === items.length) { showTotal(root, results, items.length, config, restart); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
     });
-    show();
+    resume(root, config, memory, show, restart);
   }
 
   /* Итог по пройденным позициям: его можно отправить и до конца тренажёра. */
@@ -201,14 +268,19 @@
     };
   }
 
-  function showTotal(root, results, planned, config) {
+  function showTotal(root, results, planned, config, restart) {
     var s = summary(results, planned);
     var line = el('p', 'tr-final');
+    var row = el('div', 'btn-row');
+    var again = button('Пройти заново');
     root.textContent = '';
     line.innerHTML = 'С первого раза: <strong>' + s.good + ' из ' + s.total + '</strong>.' +
       (s.missed.length ? ' Над этими позициями стоит подумать ещё раз: ' + s.missed.join(', ') + '.' : ' Все позиции решены с первого раза.') +
       (config.doneNote ? ' <strong>' + config.doneNote + '</strong>' : '');
     root.appendChild(line);
+    again.addEventListener('click', restart);
+    row.appendChild(again);
+    root.appendChild(row);
     config.onFinish(s);
   }
 
@@ -220,12 +292,13 @@
    */
   function ThreatTrainer(root, config) {
     var items = config.items;
-    var index = 0;
+    var memory = progress(root, items);
+    var results = memory.results;
+    var index = results.length;
     var misses = 0;
     var sawThreat = true;
     var picked = null;
     var firstWrong = null;
-    var results = [];
     var head = el('div', 'tr-head');
     var counter = el('span');
     var score = el('span');
@@ -271,6 +344,7 @@
 
     function finishItem(ok, arrows, text, cls) {
       results.push({ label: items[index].label, ok: ok, slip: slip() });
+      memory.save();
       config.onFinish(summary(results, items.length));
       board.stopPick();
       board.arrows(arrows);
@@ -352,12 +426,19 @@
       board.pickSquare(judgeThreat);
     }
 
+    function restart() {
+      memory.reset();
+      root.textContent = '';
+      config.onFinish(summary([], items.length));
+      ThreatTrainer(root, config);
+    }
+
     none.addEventListener('click', function () { judgeThreat(null); });
     next.addEventListener('click', function () {
       index += 1;
-      if (index === items.length) { showTotal(root, results, items.length, config); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
+      if (index === items.length) { showTotal(root, results, items.length, config, restart); } else { show(); root.scrollIntoView({ block: 'nearest' }); }
     });
-    show();
+    resume(root, config, memory, show, restart);
   }
 
   function copy(text, output, status) {
@@ -381,12 +462,25 @@
     }
   }
 
-  /* Итог собирается в текст, который ученица сама отправляет в мессенджере. Страница ничего не передаёт. */
+  /*
+   * Итог собирается в текст, который ученик сам отправляет в мессенджере. Страница ничего не передаёт.
+   * Ответы формы и время урока хранятся в памяти браузера вместе с позициями тренажёров.
+   * Время считается от открытия страницы до последней решённой позиции; после перезагрузки
+   * отсчёт продолжается, если в памяти уже есть пройденные позиции.
+   */
   function ResultForm(form, config) {
-    var started = Date.now();
+    var saved = load('form') || {};
+    var state = {
+      started: saved.total > 0 && saved.started ? saved.started : Date.now(),
+      lastAt: saved.total > 0 ? saved.lastAt || null : null,
+      total: saved.total || 0,
+      fields: saved.fields || {}
+    };
+    var ready = false;
     var result = null;
     var comment = form.querySelector('#comment');
     var extras = form.querySelectorAll('[data-line]');
+    var levels = form.querySelectorAll('input[name="difficulty"]');
     var output = form.querySelector('.out');
     var status = form.querySelector('.form-status');
     var send = form.querySelector('[data-send]');
@@ -394,6 +488,30 @@
     function difficulty() {
       var picked = form.querySelector('input[name="difficulty"]:checked');
       return picked ? picked.value : 'не указана';
+    }
+
+    function fieldKey(field, i) { return field.id || 'line' + i; }
+
+    function restoreFields() {
+      Array.prototype.forEach.call(levels, function (input) { input.checked = input.value === state.fields.difficulty; });
+      if (state.fields.comment) { comment.value = state.fields.comment; }
+      Array.prototype.forEach.call(extras, function (field, i) {
+        var value = state.fields[fieldKey(field, i)];
+        if (value) { field.value = value; }
+      });
+    }
+
+    function remember() {
+      var picked = form.querySelector('input[name="difficulty"]:checked');
+      var fields = { difficulty: picked ? picked.value : '', comment: comment.value };
+      Array.prototype.forEach.call(extras, function (field, i) { fields[fieldKey(field, i)] = field.value; });
+      state.fields = fields;
+      store('form', state);
+    }
+
+    function minutes() {
+      var end = state.lastAt || Date.now();
+      return Math.max(1, Math.round((end - state.started) / 60000));
     }
 
     function build() {
@@ -404,7 +522,7 @@
         }
         lines.push('С первого раза: ' + result.good + ' из ' + result.total);
         lines.push('Ошибки: ' + (result.detail.length ? result.detail.join(', ') : 'нет'));
-        lines.push('Время: ' + Math.max(1, Math.round((Date.now() - started) / 60000)) + ' мин');
+        lines.push('Время: ' + minutes() + ' мин');
       } else {
         lines.push('Тренажёр не начат');
       }
@@ -418,7 +536,11 @@
 
     function refresh() { output.value = build(); }
 
-    form.addEventListener('input', refresh);
+    restoreFields();
+    /* Тренажёры восстанавливают позиции сразу при создании; это не новые ответы, и время по ним не сдвигается. */
+    window.setTimeout(function () { ready = true; }, 0);
+    form.addEventListener('input', function () { remember(); refresh(); });
+    form.addEventListener('change', function () { remember(); refresh(); });
     form.addEventListener('submit', function (event) { event.preventDefault(); });
     send.addEventListener('click', function () {
       var text = build();
@@ -434,7 +556,15 @@
       }
     });
     refresh();
-    return { setResult: function (value) { result = value; refresh(); } };
+    return {
+      setResult: function (value) {
+        result = value;
+        if (ready && value.total > state.total) { state.lastAt = Date.now(); }
+        state.total = value.total;
+        store('form', state);
+        refresh();
+      }
+    };
   }
 
   window.Lesson = { StepBoard: StepBoard, SafetyTrainer: SafetyTrainer, ThreatTrainer: ThreatTrainer, ResultForm: ResultForm };
