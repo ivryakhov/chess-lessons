@@ -287,6 +287,7 @@
   /*
    * Сначала ученица ищет, что бьёт соперник, потом сама выбирает ход.
    * С config.spotOnly остаётся только поиск угрозы.
+   * config.question и config.pickHint заменяют вопрос «Что он теперь бьёт?» и подсказку под ним.
    * items: [{ side, fen, last: {from, to}, label, threats: [поле], noneOk, threatArrows: [{from, to}],
    *           threatNote (HTML), moves: { e2e4: {ok, san, reply: {from, to, san}} }, best: 'e2e4', note (HTML), hint (HTML) }]
    */
@@ -419,10 +420,10 @@
       board.position(item.fen);
       board.mark(item.last.from, 'last');
       board.mark(item.last.to, 'last');
-      prompt.innerHTML = 'Ты играешь ' + colour + '. Соперник сыграл <strong>' + item.label + '</strong>. Что он теперь бьёт?';
+      prompt.innerHTML = 'Ты играешь ' + colour + '. Соперник сыграл <strong>' + item.label + '</strong>. ' + (config.question || 'Что он теперь бьёт?');
       choices.style.display = '';
       row.style.display = 'none';
-      say('Нажми на свою фигуру под ударом. Если угрозы нет, нажми кнопку под доской.', 'hint');
+      say(config.pickHint || 'Нажми на свою фигуру под ударом. Если угрозы нет, нажми кнопку под доской.', 'hint');
       board.pickSquare(judgeThreat);
     }
 
