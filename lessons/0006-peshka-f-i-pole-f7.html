@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:,">
+  <title>Пешка f и поле f7</title>
+  <link rel="stylesheet" href="../assets/course.css?v=4">
+</head>
+<body>
+<main>
+  <p class="kicker">Урок 6 · около 10 минут</p>
+  <h1>Пешка f и поле f7</h1>
+  <p class="lead">Пока король не рокировал, пешку f7 защищает только он. Отсюда и начинаются быстрые поражения.</p>
+
+  <p>Сначала хорошая новость. В последней 31 партии ты зевала не чаще соперников, и в первых двенадцати ходах тоже. В начале курса ты зевала там в полтора раза чаще, так что это большой сдвиг. Слабое место теперь другое: белыми ты набираешь 63% очков, а чёрными против 1.e4 только 37%. Несколько быстрых поражений чёрными начались с пешки f7.</p>
+
+  <h2>Мат на f7</h2>
+  <div id="example"></div>
+
+  <p class="key">Пока ты не рокировала, считай: сколько его фигур бьют f7 и сколько твоих его защищают. Если ударов больше, закрой линию или добавь защитника.</p>
+  <p>Защитник, которого можно просто забрать, — слабая защита: так случилось с конём h6. У белых то же самое с полем f2.</p>
+
+  <h2>Разминка: что он бьёт?</h2>
+  <p>Нажми на свою фигуру или пешку под настоящим ударом или на «Ничего важного». Пешка под ударом, но с таким же числом защитников — ещё не угроза.</p>
+  <div id="spot"></div>
+
+  <h2>Ход пешкой f</h2>
+  <p class="key">Ход пешкой f до рокировки открывает диагональ к королю: ...f6 — линию h5–e8, f3 — линию h4–e1. Перед таким ходом проверь, может ли его ферзь выйти на неё с шахом.</p>
+  <p>Реши, можно ли сыграть ход. Если нельзя, покажи ответ соперника. Иногда пешка f уходит, а диагональ всё равно закрыта.</p>
+  <div id="safety"></div>
+
+  <h2>Задание на партии</h2>
+  <p>До следующего урока сыграй три партии 10+5:</p>
+  <ol>
+    <li>Чёрными, пока не рокировала, следи за f7: сколько у него ударов и сколько у тебя защитников. Белыми так же следи за f2.</li>
+    <li>Перед ходом пешкой f до рокировки проверь диагональ к королю.</li>
+    <li>Между партиями делай паузу хотя бы в пару минут. 9 ноября ты сыграла восемь партий за час почти без перерывов и набрала полтора очка.</li>
+    <li>После каждой партии, до анализа движком, найди один ход соперника, который тебя удивил. Его можно вписать в форму ниже.</li>
+  </ol>
+  <p><a href="../reference/proverka-pered-hodom.html">Шпаргалку</a> можно открыть рядом с партией.</p>
+
+  <h2>Как всё прошло</h2>
+  <form class="form" id="result">
+    <fieldset>
+      <legend>Насколько было сложно?</legend>
+      <div class="opts">
+        <label><input type="radio" name="difficulty" value="легко"> Легко</label>
+        <label><input type="radio" name="difficulty" value="в самый раз"> В самый раз</label>
+        <label><input type="radio" name="difficulty" value="трудно"> Трудно</label>
+      </div>
+    </fieldset>
+    <label for="comment">Что осталось непонятным? Что показалось спорным?</label>
+    <textarea id="comment" placeholder="Любой вопрос по уроку или по твоим партиям"></textarea>
+    <p></p>
+    <label for="surprise">Какой ход соперника в последних партиях тебя удивил? Что ты не увидела?</label>
+    <textarea id="surprise" data-line="Ход, который удивил" placeholder="Например: 24.Сxd1, не заметила слона h5"></textarea>
+    <div class="btn-row">
+      <button class="btn primary" type="button" data-send>Отправить итог</button>
+    </div>
+    <p class="form-status" role="status"></p>
+    <label for="summary">Текст итога</label>
+    <textarea class="out" id="summary" readonly></textarea>
+  </form>
+  <p>Отправь итог в мессенджере. Любой вопрос тоже можно написать там: разберём и его.</p>
+
+  <p class="foot">
+    Главный источник: <a href="https://forwardchess.com/blog/review-looking-for-trouble-recognizing-and-meeting-threats-in-chess/">обзор книги Dan Heisman «Looking for Trouble»</a> (на английском).<br>
+    Оценки позиций: Stockfish. Урок подготовил Claude. Ответы хранятся только в этом браузере и никуда не отправляются.<br>
+    <a href="0001-shahi-i-vzyatiya.html">Урок 1</a> · <a href="0002-chto-izmenil-hod.html">Урок 2</a> · <a href="0003-dve-proverki.html">Урок 3</a> · <a href="0004-dalnoboynye-figury.html">Урок 4</a> · <a href="0005-vse-polya-konya.html">Урок 5</a> · <a href="../reference/proverka-pered-hodom.html">Шпаргалка</a> · <a href="../index.html">Все уроки</a>
+  </p>
+</main>
+
+<script src="../assets/board.js?v=4"></script>
+<script src="../assets/trainer.js?v=5"></script>
+<script>
+  var form = Lesson.ResultForm(document.getElementById('result'), { title: 'Урок 6: пешка f и поле f7' });
+  var spotResult = null;
+  var safetyResult = null;
+
+  function combine() {
+    var parts = [spotResult, safetyResult].filter(Boolean);
+    var sum = function (key) { return parts.reduce(function (n, p) { return n + p[key]; }, 0); };
+    var join = function (key) { return parts.reduce(function (list, p) { return list.concat(p[key]); }, []); };
+    form.setResult({ good: sum('good'), total: sum('total'), planned: 10, missed: join('missed'), detail: join('detail') });
+  }
+
+  Lesson.StepBoard(document.getElementById('example'), {
+    orientation: 'black',
+    steps: [{"fen":"rnbqk1nr/pppp1ppp/8/2b1p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR b KQkq - 3 3","arrows":[{"from":"c4","to":"f7","kind":"danger"},{"from":"f3","to":"f7","kind":"danger"}],"text":"Партия 9 ноября, ты играешь чёрными. Слон c4 и ферзь f3 вдвоём бьют f7, а защищает его только король: грозит 4.Фxf7#."},{"fen":"rnbqk2r/ppp2ppp/3p3n/2b1p3/2B1P3/3P1Q2/PPP2PPP/RNB1K1NR w KQkq - 0 5","arrows":[{"from":"h6","to":"f7","kind":"plan"},{"from":"c1","to":"h6","kind":"danger"}],"marks":[{"sq":"d3","kind":"last"},{"sq":"d6","kind":"last"}],"text":"В партии было <strong>3...Кh6</strong>: конь встал вторым защитником f7. Но после 4.d3 d6 слон c1 смотрит прямо на него: <strong>5.Сxh6</strong>."},{"fen":"rnbqk2r/ppp2p1p/3p3p/2b1p3/2B1P3/3P1Q2/PPP2PPP/RN2K1NR w KQkq - 0 6","arrows":[{"from":"f3","to":"f7","kind":"danger"},{"from":"c4","to":"f7","kind":"danger"}],"marks":[{"sq":"h6","kind":"last"}],"text":"Защитник исчез, и у f7 снова один король против двух ударов. После <strong>5...gxh6</strong> было <strong>6.Фxf7#</strong>. А если слона не брать, ты остаёшься без коня."},{"fen":"rnbqk1nr/pppp1ppp/8/2b1p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR b KQkq - 3 3","arrows":[{"from":"g8","to":"f6","kind":"good"},{"from":"d8","to":"e7","kind":"good"}],"text":"Надёжнее было <strong>3...Кf6</strong>: конь закрывает линию ферзя на f7. Подходили и <strong>3...Фe7</strong> или 3...Фf6: ферзь защищает f7."}]
+  });
+
+  Lesson.ThreatTrainer(document.getElementById('spot'), {
+    spotOnly: true,
+    doneNote: 'Это была разминка: ниже ещё шесть позиций.',
+    items: [{"side":"black","fen":"r1bqk1nr/pppp1ppp/2n5/2b3N1/2B1P3/2P5/P4PPP/RNBQK2R b KQkq - 2 7","last":{"from":"f3","to":"g5"},"label":"7.Кg5","threats":["f7"],"noneOk":false,"threatArrows":[{"from":"g5","to":"f7"},{"from":"c4","to":"f7"}],"threatNote":"Конь g5 и слон c4 бьют f7, а защищает его только король: грозит 8.Кxf7 с ударом по ферзю и ладье. В партии ты поставила второго защитника, 7...Кh6, и это хороший ход."},{"side":"white","fen":"r1bqk2r/ppp2ppp/2n1P3/1Nbp4/4nB2/8/PPP1PPPP/R2QKBNR w KQkq - 1 7","last":{"from":"f8","to":"c5"},"label":"6...Сc5","threats":["f2"],"noneOk":false,"threatArrows":[{"from":"c5","to":"f2"},{"from":"e4","to":"f2"}],"threatNote":"Слон c5 и конь e4 бьют f2, а защищает его только король: грозит 7...Сxf2#, мат. Проще всего закрыть линию слона: 7.e3. В партии было 7.Кxc7+ Фxc7, и угроза осталась."},{"side":"black","fen":"r1bqk2r/pppp1ppp/2n4n/2b1p1N1/2B1P3/3P4/PPP2PPP/RNBQK2R b KQkq - 0 5","last":{"from":"d2","to":"d3"},"label":"5.d3","threats":["f7"],"noneOk":true,"threatArrows":[{"from":"g5","to":"f7"},{"from":"c4","to":"f7"}],"threatNote":"Конь g5 и слон c4 бьют f7, но защитников тоже два: король и конь h6. Если белые возьмут на f7, они отдадут две фигуры за коня и пешку. Сейчас ничего важного."},{"side":"black","fen":"r2qk2r/ppp2p2/3p1nPp/2b1p3/2BnP1bB/2NP1N2/PPP3PP/R2QK2R b KQkq - 0 10","last":{"from":"f5","to":"g6"},"label":"10.fxg6","threats":["f7"],"noneOk":false,"threatArrows":[{"from":"g6","to":"f7"},{"from":"c4","to":"f7"}],"threatNote":"Пешка g6 и слон c4 бьют f7: грозит 11.gxf7+ или 11.Сxf7+. В партии ты сразу забрала пешку, 10...fxg6, и это единственный хороший ход."}],
+    onFinish: function (result) { spotResult = result; combine(); }
+  });
+
+  Lesson.SafetyTrainer(document.getElementById('safety'), {
+    items: [{"side":"black","label":"7...f6","before":"r1bqk2r/p1pp1ppp/2p5/2b1N3/4n3/5Q2/PPPP1PPP/RNB2RK1 b kq - 1 7","plan":{"from":"f7","to":"f6"},"safe":false,"note":"Ферзь f3 и конь e5 грозили матом на f7. Пешка f6 закрыла линию ферзя и напала на коня, но открыла диагональ h5–e8: 8.Фh5+ g6 9.Кxg6, и на 9...hxg6 пропадает ладья: 10.Фxh8+. Лучше было 7...Кg5: конь нападает на ферзя и сам защищает f7.","after":"r1bqk2r/p1pp2pp/2p2p2/2b1N3/4n3/5Q2/PPPP1PPP/RNB2RK1 w kq - 0 8","reply":{"from":"f3","to":"h5"},"near":[{"from":"f3","to":"e4","text":"Ферзь заберёт коня e4, но есть ход сильнее, с шахом. Проверь диагональ h5–e8."}]},{"side":"white","label":"8.f3","before":"rn1qkb1r/1p3ppp/p2p1n2/2pP1b2/2P1pB2/2N3P1/PP2PPBP/R2QK1NR w KQkq - 2 8","plan":{"from":"f2","to":"f3"},"safe":true,"note":"Пешка f ушла, но диагональ h4–e1 закрыта пешкой g3, а ферзю d8 на неё и не выйти: мешает конь f6. Ход безопасен, и пешка f3 нападает на e4."},{"side":"white","label":"7.f3","before":"rnb1kb1r/ppp2p1p/3p1qp1/3Pp3/2P1n3/1P6/PB3PPP/RN1QKBNR w KQkq - 1 7","plan":{"from":"f2","to":"f3"},"safe":false,"note":"Ферзь f6 и конь e4 грозили матом на f2. Ход 7.f3 закрыл линию ферзя, но открыл диагональ h4–e1: 7...Фh4+ 8.g3 Кxg3, и под ударом ладья h1. Лучше было 7.Кf3: конь закрывает линию f, а пешка f2 остаётся на месте.","after":"rnb1kb1r/ppp2p1p/3p1qp1/3Pp3/2P1n3/1P3P2/PB4PP/RN1QKBNR b KQkq - 0 7","reply":{"from":"f6","to":"h4"},"near":[{"from":"f6","to":"f3","text":"Пешку f3 защищает пешка g2. Проверь диагональ h4–e1."},{"from":"e4","to":"g3","text":"Конь нападает на ладью h1, но его заберёт пешка h2. Есть ход сильнее, с шахом."}]},{"side":"black","label":"6...f6","before":"r1bqkbnr/p1p2ppp/2p5/4p3/3p4/1P3NP1/PBPPPP1P/RN1QK2R b KQkq - 1 6","plan":{"from":"f7","to":"f6"},"safe":true,"note":"Диагональ h5–e8 открылась, но ферзю d1 на неё не выйти: путь закрывают пешка e2 и конь f3. Зато пешка f6 защитила e5. Ход безопасен."},{"side":"white","label":"12.Лb1","before":"rnbq1rk1/bp3ppp/2p1pn2/3p4/N2P1B2/P2BP3/2P2PPP/R2QK1NR w KQ - 2 12","plan":{"from":"a1","to":"b1"},"safe":false,"note":"Король e1 ещё не рокировал, а диагональ a5–e1 открыта: 12...Фa5+ даёт шах и бьёт коня a4. Это правило из третьего урока. Лучше было 12.c3: пешка закрывает диагональ.","after":"rnbq1rk1/bp3ppp/2p1pn2/3p4/N2P1B2/P2BP3/2P2PPP/1R1QK1NR b K - 3 12","reply":{"from":"d8","to":"a5"}},{"side":"black","label":"8...f6","before":"r2qkb1r/ppp1nppp/2n1p3/3pNb2/Q2P1B2/N1P1P3/PP3PPP/R3KB1R b KQkq - 4 8","plan":{"from":"f7","to":"f6"},"safe":true,"note":"Ферзю a4 не выйти на диагональ h5–e8 одним ходом, а прыжок 9.Кf7 на ферзя и ладью не страшен: поле f7 защищает король. Эту позицию ты видела в пятом уроке."}],
+    onFinish: function (result) { safetyResult = result; combine(); }
+  });
+</script>
+</body>
+</html>
