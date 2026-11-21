@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:,">
+  <title>Что изменил его ход</title>
+  <link rel="stylesheet" href="../assets/course.css?v=4">
+</head>
+<body>
+<main>
+  <p class="kicker">Урок 7 · около 10 минут</p>
+  <h1>Что изменил его ход</h1>
+  <p class="lead">Вопрос из второго урока, но теперь в середине партии.</p>
+
+  <p>В последних двенадцати партиях ты зевала реже соперников, а в первых двенадцати ходах — заметно реже. Против соперников сильнее 1300 у тебя половина очков. Свой ход ты теперь проверяешь хорошо: зевков, которые создаёт твой собственный ход, стало меньше. Зато почти половина оставшихся — угрозы, которые уже стояли на доске после его хода. Часто ты отвечала на такой ход за 3–5 секунд.</p>
+
+  <h2>Ход открыл линию</h2>
+  <div id="example"></div>
+
+  <p class="key">После его хода спроси себя: что теперь бьёт фигура, которая пошла, и что она открыла — линию для ладьи, слона или ферзя за ней. Особенно после взятий и ходов пешкой.</p>
+  <p>На ответ после его взятия трать хотя бы 10 секунд: времени у тебя хватает, после 20-го хода на часах обычно больше шести минут.</p>
+
+  <h2>Разминка: что он бьёт?</h2>
+  <p>Нажми на свою фигуру под ударом или на «Ничего важного».</p>
+  <div id="spot"></div>
+
+  <h2>Полная проверка</h2>
+  <p>Сначала найди, что он бьёт, потом выбери ход.</p>
+  <div id="full"></div>
+
+  <h2>Задание на партии</h2>
+  <p>До следующего урока сыграй три партии 10+5:</p>
+  <ol>
+    <li>После каждого его хода — что бьёт фигура, которая пошла, и что она открыла. Только потом свой ход.</li>
+    <li>После его взятия не отвечай быстрее чем за 10 секунд.</li>
+    <li>Между партиями — пауза хотя бы в пару минут.</li>
+    <li>После партии, до анализа движком, найди один ход соперника, который тебя удивил, и впиши его в форму.</li>
+  </ol>
+  <p><a href="../reference/proverka-pered-hodom.html">Шпаргалку</a> можно открыть рядом с партией.</p>
+
+  <h2>Как всё прошло</h2>
+  <form class="form" id="result">
+    <fieldset>
+      <legend>Насколько было сложно?</legend>
+      <div class="opts">
+        <label><input type="radio" name="difficulty" value="легко"> Легко</label>
+        <label><input type="radio" name="difficulty" value="в самый раз"> В самый раз</label>
+        <label><input type="radio" name="difficulty" value="трудно"> Трудно</label>
+      </div>
+    </fieldset>
+    <label for="comment">Что осталось непонятным? Что показалось спорным?</label>
+    <textarea id="comment" placeholder="Любой вопрос по уроку или по твоим партиям"></textarea>
+    <p></p>
+    <label for="surprise">Какой ход соперника в последних партиях тебя удивил? Что ты не увидела?</label>
+    <textarea id="surprise" data-line="Ход, который удивил" placeholder="Например: 12.Лxf5, не заметила ладью f1"></textarea>
+    <div class="btn-row">
+      <button class="btn primary" type="button" data-send>Отправить итог</button>
+    </div>
+    <p class="form-status" role="status"></p>
+    <label for="summary">Текст итога</label>
+    <textarea class="out" id="summary" readonly></textarea>
+  </form>
+  <p>Отправь итог в мессенджере. Любой вопрос тоже можно написать там: разберём и его.</p>
+
+  <p class="foot">
+    Главный источник: <a href="https://forwardchess.com/blog/review-looking-for-trouble-recognizing-and-meeting-threats-in-chess/">обзор книги Dan Heisman «Looking for Trouble»</a> (на английском).<br>
+    Оценки позиций: Stockfish. Урок подготовил Claude. Ответы хранятся только в этом браузере и никуда не отправляются.<br>
+    <a href="0002-chto-izmenil-hod.html">Урок 2</a> · <a href="0005-vse-polya-konya.html">Урок 5</a> · <a href="0006-peshka-f-i-pole-f7.html">Урок 6</a> · <a href="../reference/proverka-pered-hodom.html">Шпаргалка</a> · <a href="../index.html">Все уроки</a>
+  </p>
+</main>
+
+<script src="../assets/board.js?v=4"></script>
+<script src="../assets/trainer.js?v=5"></script>
+<script>
+  var form = Lesson.ResultForm(document.getElementById('result'), { title: 'Урок 7: что изменил его ход' });
+  var spotResult = null;
+  var fullResult = null;
+
+  function combine() {
+    var parts = [spotResult, fullResult].filter(Boolean);
+    var sum = function (key) { return parts.reduce(function (n, p) { return n + p[key]; }, 0); };
+    var join = function (key) { return parts.reduce(function (list, p) { return list.concat(p[key]); }, []); };
+    form.setResult({ good: sum('good'), total: sum('total'), planned: 7, missed: join('missed'), detail: join('detail') });
+  }
+
+  Lesson.StepBoard(document.getElementById('example'), {
+    orientation: 'black',
+    steps: [{"fen":"2kr1b1r/ppp2ppp/2nq1n2/3p1b2/3PP3/N1P1P1P1/PP1N2BP/R1BQ1RK1 b - - 0 11","marks":[{"sq":"f3","kind":"last"},{"sq":"e4","kind":"last"}],"arrows":[{"from":"f1","to":"f5","kind":"danger"},{"from":"e4","to":"f5","kind":"danger"}],"text":"Партия 15 ноября, ты играешь чёрными. Соперник сыграл <strong>11.fxe4</strong>. Пешка не только взяла: она ушла с линии f, и ладья f1 теперь бьёт слона f5. И сама пешка e4 тоже бьёт f5."},{"fen":"2kr1b1r/ppp2ppp/2nq1n2/5b2/3Pp3/N1P1P1P1/PP1N2BP/R1BQ1RK1 w - - 0 12","marks":[{"sq":"d5","kind":"last"},{"sq":"e4","kind":"last"}],"arrows":[{"from":"f1","to":"f5","kind":"danger"}],"text":"В партии было <strong>11...dxe4</strong>, за 5 секунд: ты забрала пешку и не заметила ладью. <strong>12.Лxf5</strong>, и слон пропал."},{"fen":"2kr1b1r/ppp2ppp/2nq1n2/3p1b2/3PP3/N1P1P1P1/PP1N2BP/R1BQ1RK1 b - - 0 11","arrows":[{"from":"f5","to":"e4","kind":"good"}],"text":"Нужно было <strong>11...Сxe4</strong>: слон уходит из-под двух ударов и сам забирает пешку."}]
+  });
+
+  Lesson.ThreatTrainer(document.getElementById('spot'), {
+    spotOnly: true,
+    doneNote: 'Это была разминка: ниже ещё три позиции полной проверки.',
+    items: [{"side":"black","fen":"r2q1rk1/2p2ppp/p3bn2/nPp1p3/1P2P3/P1NP1N1P/5PP1/R2QKB1R b KQ - 0 12","last":{"from":"b3","to":"b4"},"label":"12.b4","threats":["a5"],"noneOk":false,"threatArrows":[{"from":"b4","to":"a5"}],"threatNote":"Пешка b4 бьёт коня a5, коню нужно уходить: 12...Кb3. В партии было 12...c4, и после 13.bxa5 конь пропал."},{"side":"white","fen":"rnb1k1nr/pp1p1ppp/4p3/q1p1P3/1b1P4/1RNB1N2/P1PB1PPP/3QK2R w Kkq - 0 10","last":{"from":"c6","to":"c5"},"label":"9...c5","threats":["d4"],"noneOk":false,"threatArrows":[{"from":"c5","to":"d4"}],"threatNote":"Пешка c5 бьёт пешку d4. Подходили 10.dxc5 или 10.Лxb4. В партии было 10.Сc4, и после 10...cxd4 большая часть перевеса ушла."},{"side":"white","fen":"2r2rk1/pq3pp1/b7/3P4/1pP4R/4PQ2/6PP/2R3K1 w - - 2 30","last":{"from":"h7","to":"g8"},"label":"29...Крg8","threats":[],"noneOk":true,"threatArrows":[],"threatNote":"Король ушёл с f8 на g8 и ничего не бьёт. Угрозы нет, значит, есть время на свой план. В партии ты ответила за 3 секунды 30.Фh5, а сильнее было 30.Фh3 с большим перевесом."},{"side":"white","fen":"3B2k1/5pbp/2r1p1p1/1p4P1/1P3P2/P2p3P/2r1NK2/2R2R2 w - - 0 32","last":{"from":"d4","to":"d3"},"label":"31...d3","threats":["e2"],"noneOk":false,"threatArrows":[{"from":"d3","to":"e2"}],"threatNote":"Пешка d3 бьёт коня e2. В партии было 32.Сf6, и после 32...dxe2 конь пропал. Держался только 32.Лxc2: сначала забрать ладью, которая защищает пешку."}],
+    onFinish: function (result) { spotResult = result; combine(); }
+  });
+
+  Lesson.ThreatTrainer(document.getElementById('full'), {
+    items: [{"side":"black","fen":"r1bq1rk1/pp2ppb1/2N2n1p/3p2p1/Q1P5/2N1P1B1/PP3PPP/R3KB1R b KQ - 0 11","last":{"from":"d4","to":"c6"},"label":"11.Кxc6","threats":["d8"],"noneOk":false,"threatArrows":[{"from":"c6","to":"d8"}],"threatNote":"Конь c6 бьёт ферзя d8.","moves":{"b7c6":{"ok":true,"san":"11...bxc6","reply":{"from":"g3","to":"e5","san":"12.Сe5"}},"d8e8":{"ok":false,"san":"11...Фe8","reply":{"from":"c6","to":"d4","san":"12.Кd4"}},"d8d7":{"ok":false,"san":"11...Фd7","reply":{"from":"c6","to":"d4","san":"12.Кd4"}},"c8d7":{"ok":false,"san":"11...Сd7","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"d8b6":{"ok":false,"san":"11...Фb6","reply":{"from":"c6","to":"e7","san":"12.Кxe7+"}},"d5d4":{"ok":false,"san":"11...d4","reply":{"from":"c6","to":"d4","san":"12.Кxd4"}},"b7b5":{"ok":false,"san":"11...b5","reply":{"from":"c4","to":"b5","san":"12.cxb5"}},"f6e4":{"ok":false,"san":"11...Кe4","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"c8e6":{"ok":false,"san":"11...Сe6","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"c8f5":{"ok":false,"san":"11...Сf5","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"e7e5":{"ok":false,"san":"11...e5","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"a7a6":{"ok":false,"san":"11...a6","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"d5c4":{"ok":false,"san":"11...dxc4","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"c8g4":{"ok":false,"san":"11...Сg4","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"f6h5":{"ok":false,"san":"11...Кh5","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"a8b8":{"ok":false,"san":"11...Лb8","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"a7a5":{"ok":false,"san":"11...a5","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"h6h5":{"ok":false,"san":"11...h5","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"b7b6":{"ok":false,"san":"11...b6","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"e7e6":{"ok":false,"san":"11...e6","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"d8c7":{"ok":false,"san":"11...Фc7","reply":{"from":"g3","to":"c7","san":"12.Сxc7"}},"g5g4":{"ok":false,"san":"11...g4","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"g7h8":{"ok":false,"san":"11...Сh8","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"f6d7":{"ok":false,"san":"11...Кd7","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"c8h3":{"ok":false,"san":"11...Сh3","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"d8d6":{"ok":false,"san":"11...Фd6","reply":{"from":"g3","to":"d6","san":"12.Сxd6"}},"f8e8":{"ok":false,"san":"11...Лe8","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"g8h8":{"ok":false,"san":"11...Крh8","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"f6h7":{"ok":false,"san":"11...Кh7","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"f6g4":{"ok":false,"san":"11...Кg4","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"d8a5":{"ok":false,"san":"11...Фa5","reply":{"from":"c6","to":"a5","san":"12.Кxa5"}},"g8h7":{"ok":false,"san":"11...Крh7","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}},"f6e8":{"ok":false,"san":"11...Кe8","reply":{"from":"c6","to":"d8","san":"12.Кxd8"}}},"best":"b7c6","note":"Проще всего забрать коня: 11...bxc6. В партии было 11...Сd7, и после 12.Кxd8 ферзь пропал."},{"side":"black","fen":"r4rk1/2p2ppp/1pN2n2/p2N3b/4P3/3RP2P/PPP3P1/R5K1 b - - 2 15","last":{"from":"c3","to":"d5"},"label":"15.Кd5","threats":["c7"],"noneOk":false,"threatArrows":[{"from":"d5","to":"c7"},{"from":"d5","to":"f6"}],"threatNote":"Конь d5 бьёт пешку c7, а с c7 он нападёт на ладью a8. Конь f6 тоже под ударом, но его защищает пешка g7.","moves":{"f6d5":{"ok":true,"san":"15...Кxd5","reply":{"from":"e4","to":"d5","san":"16.exd5"}},"a8e8":{"ok":false,"san":"15...Лae8","reply":{"from":"d5","to":"e7","san":"16.Кde7+"}},"g8h8":{"ok":false,"san":"15...Крh8","reply":{"from":"d5","to":"f4","san":"16.Кf4"}},"h5e2":{"ok":false,"san":"15...Сe2","reply":{"from":"d5","to":"f6","san":"16.Кxf6+"}},"h5g6":{"ok":false,"san":"15...Сg6","reply":{"from":"d5","to":"c7","san":"16.Кxc7"}},"f6e8":{"ok":false,"san":"15...Кe8","reply":{"from":"c6","to":"e7","san":"16.Кce7+"}},"h7h6":{"ok":false,"san":"15...h6","reply":{"from":"d5","to":"c7","san":"16.Кxc7"}},"f6e4":{"ok":false,"san":"15...Кxe4","reply":{"from":"d5","to":"c7","san":"16.Кxc7"}},"f8c8":{"ok":false,"san":"15...Лfc8","reply":{"from":"d5","to":"e7","san":"16.Кde7+"}},"a8b8":{"ok":false,"san":"15...Лab8","reply":{"from":"d5","to":"e7","san":"16.Кde7+"}},"a5a4":{"ok":false,"san":"15...a4","reply":{"from":"d5","to":"c7","san":"16.Кxc7"}},"f8e8":{"ok":false,"san":"15...Лfe8","reply":{"from":"d5","to":"c7","san":"16.Кxc7"}},"f8b8":{"ok":false,"san":"15...Лfb8","reply":{"from":"d5","to":"c7","san":"16.Кxc7"}},"a8c8":{"ok":false,"san":"15...Лac8","reply":{"from":"d5","to":"e7","san":"16.Кde7+"}},"b6b5":{"ok":false,"san":"15...b5","reply":{"from":"d5","to":"c7","san":"16.Кxc7"}},"h5g4":{"ok":false,"san":"15...Сg4","reply":{"from":"d5","to":"f6","san":"16.Кxf6+"}},"f6g4":{"ok":false,"san":"15...Кg4","reply":{"from":"h3","to":"g4","san":"16.hxg4"}},"h5d1":{"ok":false,"san":"15...Сd1","reply":{"from":"d5","to":"f6","san":"16.Кxf6+"}},"f6d7":{"ok":false,"san":"15...Кd7","reply":{"from":"d5","to":"e7","san":"16.Кde7+"}},"a8a6":{"ok":false,"san":"15...Лa6","reply":{"from":"d5","to":"c7","san":"16.Кxc7"}},"h5f3":{"ok":false,"san":"15...Сf3","reply":{"from":"g2","to":"f3","san":"16.gxf3"}},"g7g6":{"ok":false,"san":"15...g6","reply":{"from":"d5","to":"f6","san":"16.Кxf6+"}},"f8d8":{"ok":false,"san":"15...Лfd8","reply":{"from":"c6","to":"d8","san":"16.Кxd8"}},"a8a7":{"ok":false,"san":"15...Лa7","reply":{"from":"c6","to":"a7","san":"16.Кxa7"}},"a8d8":{"ok":false,"san":"15...Лad8","reply":{"from":"d5","to":"e7","san":"16.Кde7+"}},"g7g5":{"ok":false,"san":"15...g5","reply":{"from":"d5","to":"f6","san":"16.Кxf6+"}}},"best":"f6d5","note":"Лучше всего забрать коня: 15...Кxd5. В партии было 15...Кxe4, и после 16.Кxc7 конь напал на ладью a8."},{"side":"black","fen":"r1bk3r/p1pp3p/2p5/2b5/3q4/3PB3/PPP2PPP/RN2R1K1 b - - 2 13","last":{"from":"c1","to":"e3"},"label":"13.Сe3","threats":["d4"],"noneOk":false,"threatArrows":[{"from":"e3","to":"d4"},{"from":"e3","to":"g5"}],"threatNote":"Слон e3 бьёт ферзя d4. И ещё одно: с поля g5 он даст шах королю d8.","moves":{"d4d5":{"ok":true,"san":"13...Фd5","reply":{"from":"b1","to":"c3","san":"14.Кc3"}},"d4g7":{"ok":true,"san":"13...Фg7","reply":{"from":"e3","to":"c5","san":"14.Сxc5"}},"h8e8":{"ok":true,"san":"13...Лe8","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"d4g4":{"ok":true,"san":"13...Фg4","reply":{"from":"e3","to":"c5","san":"14.Сxc5"}},"d4f6":{"ok":true,"san":"13...Фf6","reply":{"from":"e3","to":"c5","san":"14.Сxc5"}},"d4e5":{"ok":true,"san":"13...Фe5","reply":{"from":"d3","to":"d4","san":"14.d4"}},"d4h4":{"ok":true,"san":"13...Фh4","reply":{"from":"e3","to":"c5","san":"14.Сxc5"}},"d4b4":{"ok":true,"san":"13...Фb4","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"h8f8":{"ok":true,"san":"13...Лf8","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"d4e3":{"ok":true,"san":"13...Фxe3","reply":{"from":"f2","to":"e3","san":"14.fxe3"}},"h7h6":{"ok":true,"san":"13...h6","reply":{"from":"e3","to":"d4","san":"14.Сxd4"}},"h8g8":{"ok":true,"san":"13...Лg8","reply":{"from":"e3","to":"d4","san":"14.Сxd4"}},"c8a6":{"ok":true,"san":"13...Сa6","reply":{"from":"e3","to":"d4","san":"14.Сxd4"}},"d4d6":{"ok":true,"san":"13...Фd6","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"d7d5":{"ok":false,"san":"13...d5","reply":{"from":"e3","to":"d4","san":"14.Сxd4"}},"c8b7":{"ok":false,"san":"13...Сb7","reply":{"from":"e3","to":"d4","san":"14.Сxd4"}},"d7d6":{"ok":false,"san":"13...d6","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"c5e7":{"ok":false,"san":"13...Сe7","reply":{"from":"e3","to":"d4","san":"14.Сxd4"}},"d4e4":{"ok":false,"san":"13...Фe4","reply":{"from":"d3","to":"e4","san":"14.dxe4"}},"d4f4":{"ok":false,"san":"13...Фf4","reply":{"from":"e3","to":"f4","san":"14.Сxf4"}},"d4a4":{"ok":false,"san":"13...Фa4","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"d4b2":{"ok":false,"san":"13...Фxb2","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"d4d3":{"ok":false,"san":"13...Фxd3","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"a8b8":{"ok":false,"san":"13...Лb8","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"h7h5":{"ok":false,"san":"13...h5","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"d4c4":{"ok":false,"san":"13...Фc4","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"a7a6":{"ok":false,"san":"13...a6","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"a7a5":{"ok":false,"san":"13...a5","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"d8e8":{"ok":false,"san":"13...Крe8","reply":{"from":"e3","to":"d4","san":"14.Сxd4+"}},"d8e7":{"ok":false,"san":"13...Крe7","reply":{"from":"e3","to":"d4","san":"14.Сxd4+"}},"c5a3":{"ok":false,"san":"13...Сa3","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"c5b4":{"ok":false,"san":"13...Сb4","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"c5d6":{"ok":false,"san":"13...Сd6","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"c5f8":{"ok":false,"san":"13...Сf8","reply":{"from":"e3","to":"d4","san":"14.Сxd4"}},"d4c3":{"ok":false,"san":"13...Фc3","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}},"c5b6":{"ok":false,"san":"13...Сb6","reply":{"from":"e3","to":"g5","san":"14.Сg5+"}}},"best":"d4d5","note":"Ферзю нужно уходить, подходят, например, 13...Фd5 или 13...Фf6. В партии было 13...Фxb2, и после 14.Сg5+ слон через несколько ходов забрал ферзя b2."}],
+    onFinish: function (result) { fullResult = result; combine(); }
+  });
+</script>
+</body>
+</html>
